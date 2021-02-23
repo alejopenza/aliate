@@ -1,0 +1,27 @@
+.THIS .slds-modal__container{
+    max-width: 70rem !important;
+    width:70% !important;
+}
+
+.THIS .slds-card{
+    /*background-color: #fff0e6 !important;*/
+    background-color: #f2f2f2 !important;
+}
+
+.THIS .spinsSANCOR::after {
+    position: absolute;
+    content: 'Obteniendo informacion de SANCOR Seguros';
+    width: 100%;
+    text-align: center;
+    top: calc(50% + 3em);
+    font-weight: bold;
+}
+
+.THIS .spinsSANCRISTOBAL::after {
+    position: absolute;
+    content: 'Obteniendo informacion de San Cristobal Seguros';
+    width: 100%;
+    text-align: center;
+    top: calc(50% + 3em);
+    font-weight: bold;
+}

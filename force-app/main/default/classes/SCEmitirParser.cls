@@ -1,0 +1,1541 @@
+public class SCEmitirParser {
+
+	public class PreferredSettlementCurrency {
+		public String Code {get;set;} 
+		public String Description {get;set;} 
+		public Boolean Selected {get;set;} 
+
+		public PreferredSettlementCurrency(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'Code') {
+							Code = parser.getText();
+						} else if (text == 'Description') {
+							Description = parser.getText();
+						} else if (text == 'Selected') {
+							Selected = parser.getBooleanValue();
+						} else {
+							System.debug(LoggingLevel.WARN, 'PreferredSettlementCurrency consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class AvailablePhoneNumbers {
+		public AditionalInterestType PhoneCountry {get;set;} 
+		public String PhoneNumber {get;set;} 
+		public AditionalInterestType PhoneType {get;set;} 
+
+		public AvailablePhoneNumbers(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'PhoneCountry') {
+							PhoneCountry = new AditionalInterestType(parser);
+						} else if (text == 'PhoneNumber') {
+							PhoneNumber = parser.getText();
+						} else if (text == 'PhoneType') {
+							PhoneType = new AditionalInterestType(parser);
+						} else {
+							System.debug(LoggingLevel.WARN, 'AvailablePhoneNumbers consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class Attributes {
+		public String ColumnName {get;set;} 
+		public Boolean Editable {get;set;} 
+		public String Label {get;set;} 
+		public String Type_Z {get;set;} // in json: Type
+		public String Value {get;set;} 
+
+		public Attributes(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'ColumnName') {
+							ColumnName = parser.getText();
+						} else if (text == 'Editable') {
+							Editable = parser.getBooleanValue();
+						} else if (text == 'Label') {
+							Label = parser.getText();
+						} else if (text == 'Type') {
+							Type_Z = parser.getText();
+						} else if (text == 'Value') {
+							Value = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'Attributes consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class AditionalInterestType {
+		public String Code {get;set;} 
+		public String Description {get;set;} 
+
+		public AditionalInterestType(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'Code') {
+							Code = parser.getText();
+						} else if (text == 'Description') {
+							Description = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'AditionalInterestType consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class Addresses {
+		public String policyPeriodID {get;set;} 
+		public Boolean updateLinkedAddresses {get;set;} 
+		public String AddressLine1 {get;set;} 
+		public String AddressLine2 {get;set;} 
+		public String AddressLine3 {get;set;} 
+		public AditionalInterestType AddressType {get;set;} 
+		public String Block {get;set;} 
+		public String City {get;set;} 
+		public AditionalInterestType Country {get;set;} 
+		public String County {get;set;} 
+		public String Description {get;set;} 
+		public String DisplayText {get;set;} 
+		public Boolean PolicyAddress {get;set;} 
+		public String PostalCode {get;set;} 
+		public Boolean PrimaryAddress {get;set;} 
+		public String PublicID {get;set;} 
+		public AditionalInterestType State {get;set;} 
+		public String StreetNumber {get;set;} 
+
+		public Addresses(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'policyPeriodID') {
+							policyPeriodID = parser.getText();
+						} else if (text == 'updateLinkedAddresses') {
+							updateLinkedAddresses = parser.getBooleanValue();
+						} else if (text == 'AddressLine1') {
+							AddressLine1 = parser.getText();
+						} else if (text == 'AddressLine2') {
+							AddressLine2 = parser.getText();
+						} else if (text == 'AddressLine3') {
+							AddressLine3 = parser.getText();
+						} else if (text == 'AddressType') {
+							AddressType = new AditionalInterestType(parser);
+						} else if (text == 'Block') {
+							Block = parser.getText();
+						} else if (text == 'City') {
+							City = parser.getText();
+						} else if (text == 'Country') {
+							Country = new AditionalInterestType(parser);
+						} else if (text == 'County') {
+							County = parser.getText();
+						} else if (text == 'Description') {
+							Description = parser.getText();
+						} else if (text == 'DisplayText') {
+							DisplayText = parser.getText();
+						} else if (text == 'PolicyAddress') {
+							PolicyAddress = parser.getBooleanValue();
+						} else if (text == 'PostalCode') {
+							PostalCode = parser.getText();
+						} else if (text == 'PrimaryAddress') {
+							PrimaryAddress = parser.getBooleanValue();
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else if (text == 'State') {
+							State = new AditionalInterestType(parser);
+						} else if (text == 'StreetNumber') {
+							StreetNumber = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'Addresses consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class Risks {
+		public Integer AverageWeightAmount {get;set;} 
+		public Boolean AverageWeightAmountSpecified {get;set;} 
+		public String Building {get;set;} 
+		public String Coverage {get;set;} 
+		public String CoverageType {get;set;} 
+		public Integer FullValue {get;set;} 
+		public Boolean FullValueSpecified {get;set;} 
+		public String Location {get;set;} 
+		public String OccupancyClass {get;set;} 
+
+		public Risks(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'AverageWeightAmount') {
+							AverageWeightAmount = parser.getIntegerValue();
+						} else if (text == 'AverageWeightAmountSpecified') {
+							AverageWeightAmountSpecified = parser.getBooleanValue();
+						} else if (text == 'Building') {
+							Building = parser.getText();
+						} else if (text == 'Coverage') {
+							Coverage = parser.getText();
+						} else if (text == 'CoverageType') {
+							CoverageType = parser.getText();
+						} else if (text == 'FullValue') {
+							FullValue = parser.getIntegerValue();
+						} else if (text == 'FullValueSpecified') {
+							FullValueSpecified = parser.getBooleanValue();
+						} else if (text == 'Location') {
+							Location = parser.getText();
+						} else if (text == 'OccupancyClass') {
+							OccupancyClass = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'Risks consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class AdditionalInterestContacts {
+		public AditionalInterestType AditionalInterestType {get;set;} 
+		public Contact Contact {get;set;} 
+		public String ContractNumber {get;set;} 
+		public Boolean IsCertRequired {get;set;} 
+		public String Name {get;set;} 
+		public String PublicID {get;set;} 
+
+		public AdditionalInterestContacts(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'AditionalInterestType') {
+							AditionalInterestType = new AditionalInterestType(parser);
+						} else if (text == 'Contact') {
+							Contact = new Contact(parser);
+						} else if (text == 'ContractNumber') {
+							ContractNumber = parser.getText();
+						} else if (text == 'IsCertRequired') {
+							IsCertRequired = parser.getBooleanValue();
+						} else if (text == 'Name') {
+							Name = parser.getText();
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'AdditionalInterestContacts consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class Coverages {
+
+		public Coverages(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						{
+							System.debug(LoggingLevel.WARN, 'Coverages consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class CoverageTerms {
+		public String DisplayText {get;set;} 
+		public Boolean Editable {get;set;} 
+		public String PublicID {get;set;} 
+		public List<TermOptions> TermOptions {get;set;} 
+		public String Value {get;set;} 
+		public String ValueTypeName {get;set;} 
+
+		public CoverageTerms(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'DisplayText') {
+							DisplayText = parser.getText();
+						} else if (text == 'Editable') {
+							Editable = parser.getBooleanValue();
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else if (text == 'TermOptions') {
+							TermOptions = arrayOfTermOptions(parser);
+						} else if (text == 'Value') {
+							Value = parser.getText();
+						} else if (text == 'ValueTypeName') {
+							ValueTypeName = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'CoverageTerms consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class AdditionalCoverages {
+		public List<CoverageTerms> CoverageTerms {get;set;} 
+		public List<ScheduleItems> ScheduleItems {get;set;} 
+		public String DisplayText {get;set;} 
+		public String PublicID {get;set;} 
+		public Boolean ToggleValue {get;set;} 
+		public String VehiclePublicId {get;set;} 
+
+		public AdditionalCoverages(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'CoverageTerms') {
+							CoverageTerms = arrayOfCoverageTerms(parser);
+						} else if (text == 'ScheduleItems') {
+							ScheduleItems = arrayOfScheduleItems(parser);
+						} else if (text == 'DisplayText') {
+							DisplayText = parser.getText();
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else if (text == 'ToggleValue') {
+							ToggleValue = parser.getBooleanValue();
+						} else if (text == 'VehiclePublicId') {
+							VehiclePublicId = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'AdditionalCoverages consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class Occupancies {
+		public String Description {get;set;} 
+		public Integer Number_Z {get;set;} // in json: Number
+		public List<PersonalProperties> PersonalProperties {get;set;} 
+		public String PublicID {get;set;} 
+
+		public Occupancies(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'Description') {
+							Description = parser.getText();
+						} else if (text == 'Number') {
+							Number_Z = parser.getIntegerValue();
+						} else if (text == 'PersonalProperties') {
+							PersonalProperties = arrayOfPersonalProperties(parser);
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'Occupancies consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class ScheduleItems {
+		public List<Coverages> Coverages {get;set;} 
+		public List<Attributes> Attributes {get;set;} 
+		public String PublicID {get;set;} 
+
+		public ScheduleItems(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'Coverages') {
+							Coverages = arrayOfCoverages(parser);
+						} else if (text == 'Attributes') {
+							Attributes = arrayOfAttributes(parser);
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'ScheduleItems consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class SpecificRisks {
+		public List<AdditionalCoverages> AdditionalCoverages {get;set;} 
+		public List<BusinessIncomes> BusinessIncomes {get;set;} 
+		public AssociatedBlanket AssociatedBlanket {get;set;} 
+		public AditionalInterestType ClassCode {get;set;} 
+		public List<AdditionalCoverages> Conditions {get;set;} 
+		public List<AdditionalCoverages> Coverages {get;set;} 
+		public String Description {get;set;} 
+		public AditionalInterestType ElecInst {get;set;} 
+		public List<AdditionalCoverages> Exclusions {get;set;} 
+		public Boolean ExplProofElectInst {get;set;} 
+		public AditionalInterestType Ext_CP7SpecClassCodeType {get;set;} 
+		public Boolean HydrantNetwork {get;set;} 
+		public String IncludedInBlkt {get;set;} 
+		public String PreferredCoverageCurrency {get;set;} 
+		public String PublicID {get;set;} 
+		public List<AdditionalCoverages> ScheduleCoverages {get;set;} 
+		public Boolean SmokeHeatDetection {get;set;} 
+		public String SpecialClassLocation {get;set;} 
+		public Integer SpecialClassNumber {get;set;} 
+		public Boolean Sprayers {get;set;} 
+
+		public SpecificRisks(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'AdditionalCoverages') {
+							AdditionalCoverages = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'BusinessIncomes') {
+							BusinessIncomes = arrayOfBusinessIncomes(parser);
+						} else if (text == 'AssociatedBlanket') {
+							AssociatedBlanket = new AssociatedBlanket(parser);
+						} else if (text == 'ClassCode') {
+							ClassCode = new AditionalInterestType(parser);
+						} else if (text == 'Conditions') {
+							Conditions = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'Coverages') {
+							Coverages = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'Description') {
+							Description = parser.getText();
+						} else if (text == 'ElecInst') {
+							ElecInst = new AditionalInterestType(parser);
+						} else if (text == 'Exclusions') {
+							Exclusions = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'ExplProofElectInst') {
+							ExplProofElectInst = parser.getBooleanValue();
+						} else if (text == 'Ext_CP7SpecClassCodeType') {
+							Ext_CP7SpecClassCodeType = new AditionalInterestType(parser);
+						} else if (text == 'HydrantNetwork') {
+							HydrantNetwork = parser.getBooleanValue();
+						} else if (text == 'IncludedInBlkt') {
+							IncludedInBlkt = parser.getText();
+						} else if (text == 'PreferredCoverageCurrency') {
+							PreferredCoverageCurrency = parser.getText();
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else if (text == 'ScheduleCoverages') {
+							ScheduleCoverages = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'SmokeHeatDetection') {
+							SmokeHeatDetection = parser.getBooleanValue();
+						} else if (text == 'SpecialClassLocation') {
+							SpecialClassLocation = parser.getText();
+						} else if (text == 'SpecialClassNumber') {
+							SpecialClassNumber = parser.getIntegerValue();
+						} else if (text == 'Sprayers') {
+							Sprayers = parser.getBooleanValue();
+						} else {
+							System.debug(LoggingLevel.WARN, 'SpecificRisks consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class AdditionalDataBank {
+		public String ApplicationNumber {get;set;} 
+		public String BranchCodeAccount {get;set;} 
+		public String BranchCodeAssigned {get;set;} 
+		public String CBU {get;set;} 
+		public String DebitAccountNumber {get;set;} 
+		public String DueDate {get;set;} 
+		public String GarmentLoanLeasingNumber {get;set;} 
+		public AditionalInterestType PaymentCode {get;set;} 
+		public String PlanCode {get;set;} 
+		public String ProductCode {get;set;} 
+		public String PublicId {get;set;} 
+		public String RiskAreaCode {get;set;} 
+		public String SaleBranchCode {get;set;} 
+
+		public AdditionalDataBank(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'ApplicationNumber') {
+							ApplicationNumber = parser.getText();
+						} else if (text == 'BranchCodeAccount') {
+							BranchCodeAccount = parser.getText();
+						} else if (text == 'BranchCodeAssigned') {
+							BranchCodeAssigned = parser.getText();
+						} else if (text == 'CBU') {
+							CBU = parser.getText();
+						} else if (text == 'DebitAccountNumber') {
+							DebitAccountNumber = parser.getText();
+						} else if (text == 'DueDate') {
+							DueDate = parser.getText();
+						} else if (text == 'GarmentLoanLeasingNumber') {
+							GarmentLoanLeasingNumber = parser.getText();
+						} else if (text == 'PaymentCode') {
+							PaymentCode = new AditionalInterestType(parser);
+						} else if (text == 'PlanCode') {
+							PlanCode = parser.getText();
+						} else if (text == 'ProductCode') {
+							ProductCode = parser.getText();
+						} else if (text == 'PublicId') {
+							PublicId = parser.getText();
+						} else if (text == 'RiskAreaCode') {
+							RiskAreaCode = parser.getText();
+						} else if (text == 'SaleBranchCode') {
+							SaleBranchCode = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'AdditionalDataBank consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public PreSubmissionRequest PreSubmissionRequest {get;set;} 
+	public Boolean Bulk_Z {get;set;} // in json: Bulk
+	public String Email {get;set;} 
+	public String PolicyPeriodId {get;set;} 
+	public String CBU {get;set;} 
+	public String CreditCardNumber {get;set;} 
+	public AditionalInterestType PaymentEntity {get;set;} 
+	public AdditionalDataBankRequest AdditionalDataBankRequest {get;set;} 
+	public String TrackingPAS {get;set;} 
+
+	public SCEmitirParser(JSONParser parser) {
+		while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+			if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+				String text = parser.getText();
+				if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+					if (text == 'PreSubmissionRequest') {
+						PreSubmissionRequest = new PreSubmissionRequest(parser);
+					} else if (text == 'Bulk') {
+						Bulk_Z = parser.getBooleanValue();
+					} else if (text == 'Email') {
+						Email = parser.getText();
+					} else if (text == 'PolicyPeriodId') {
+						PolicyPeriodId = parser.getText();
+					} else if (text == 'CBU') {
+						CBU = parser.getText();
+					} else if (text == 'CreditCardNumber') {
+						CreditCardNumber = parser.getText();
+					} else if (text == 'PaymentEntity') {
+						PaymentEntity = new AditionalInterestType(parser);
+					} else if (text == 'AdditionalDataBankRequest') {
+						AdditionalDataBankRequest = new AdditionalDataBankRequest(parser);
+					} else if (text == 'TrackingPAS') {
+						TrackingPAS = parser.getText();
+					} else {
+						System.debug(LoggingLevel.WARN, 'SCEmitirParser consuming unrecognized property: '+text);
+						consumeObject(parser);
+					}
+				}
+			}
+		}
+	}
+	
+	public class Buildings {
+		public AditionalInterestType Actividad {get;set;} 
+		public List<AdditionalCoverages> AdditionalCoverages {get;set;} 
+		public Boolean AlarmaConMonitoreo {get;set;} 
+		public Integer AnioConstruccion {get;set;} 
+		public Integer BuildingNumber {get;set;} 
+		public List<BusinessIncomes> BusinessIncomes {get;set;} 
+		public Integer CantidadAscensores {get;set;} 
+		public Integer CantidadPlantas {get;set;} 
+		public Boolean CerradurasDoblePaleta {get;set;} 
+		public List<AdditionalCoverages> Conditions {get;set;} 
+		public List<AdditionalCoverages> Coverages {get;set;} 
+		public String Description {get;set;} 
+		public Boolean DeteccionHumoCalor {get;set;} 
+		public List<AdditionalCoverages> Exclusions {get;set;} 
+		public String FechaInspeccion {get;set;} 
+		public String Inspector {get;set;} 
+		public AditionalInterestType InstalacionElectrica {get;set;} 
+		public Boolean LinderosBaldios {get;set;} 
+		public String MatrizRiesgo {get;set;} 
+		public Integer MetrosCuadrados {get;set;} 
+		public Boolean NegocioEnComunicacionConLaVivienda {get;set;} 
+		public String Observaciones {get;set;} 
+		public List<Occupancies> Occupancies {get;set;} 
+		public Integer PorcenPML {get;set;} 
+		public String PublicID {get;set;} 
+		public Boolean RedHidrantes {get;set;} 
+		public Boolean RejasEnAberturas {get;set;} 
+		public Boolean Rociadores {get;set;} 
+		public AditionalInterestType TipoConstruccion {get;set;} 
+		public AditionalInterestType TipoVivienda {get;set;} 
+		public AditionalInterestType UsoDelEdificio {get;set;} 
+
+		public Buildings(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'Actividad') {
+							Actividad = new AditionalInterestType(parser);
+						} else if (text == 'AdditionalCoverages') {
+							AdditionalCoverages = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'AlarmaConMonitoreo') {
+							AlarmaConMonitoreo = parser.getBooleanValue();
+						} else if (text == 'AnioConstruccion') {
+							AnioConstruccion = parser.getIntegerValue();
+						} else if (text == 'BuildingNumber') {
+							BuildingNumber = parser.getIntegerValue();
+						} else if (text == 'BusinessIncomes') {
+							BusinessIncomes = arrayOfBusinessIncomes(parser);
+						} else if (text == 'CantidadAscensores') {
+							CantidadAscensores = parser.getIntegerValue();
+						} else if (text == 'CantidadPlantas') {
+							CantidadPlantas = parser.getIntegerValue();
+						} else if (text == 'CerradurasDoblePaleta') {
+							CerradurasDoblePaleta = parser.getBooleanValue();
+						} else if (text == 'Conditions') {
+							Conditions = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'Coverages') {
+							Coverages = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'Description') {
+							Description = parser.getText();
+						} else if (text == 'DeteccionHumoCalor') {
+							DeteccionHumoCalor = parser.getBooleanValue();
+						} else if (text == 'Exclusions') {
+							Exclusions = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'FechaInspeccion') {
+							FechaInspeccion = parser.getText();
+						} else if (text == 'Inspector') {
+							Inspector = parser.getText();
+						} else if (text == 'InstalacionElectrica') {
+							InstalacionElectrica = new AditionalInterestType(parser);
+						} else if (text == 'LinderosBaldios') {
+							LinderosBaldios = parser.getBooleanValue();
+						} else if (text == 'MatrizRiesgo') {
+							MatrizRiesgo = parser.getText();
+						} else if (text == 'MetrosCuadrados') {
+							MetrosCuadrados = parser.getIntegerValue();
+						} else if (text == 'NegocioEnComunicacionConLaVivienda') {
+							NegocioEnComunicacionConLaVivienda = parser.getBooleanValue();
+						} else if (text == 'Observaciones') {
+							Observaciones = parser.getText();
+						} else if (text == 'Occupancies') {
+							Occupancies = arrayOfOccupancies(parser);
+						} else if (text == 'PorcenPML') {
+							PorcenPML = parser.getIntegerValue();
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else if (text == 'RedHidrantes') {
+							RedHidrantes = parser.getBooleanValue();
+						} else if (text == 'RejasEnAberturas') {
+							RejasEnAberturas = parser.getBooleanValue();
+						} else if (text == 'Rociadores') {
+							Rociadores = parser.getBooleanValue();
+						} else if (text == 'TipoConstruccion') {
+							TipoConstruccion = new AditionalInterestType(parser);
+						} else if (text == 'TipoVivienda') {
+							TipoVivienda = new AditionalInterestType(parser);
+						} else if (text == 'UsoDelEdificio') {
+							UsoDelEdificio = new AditionalInterestType(parser);
+						} else {
+							System.debug(LoggingLevel.WARN, 'Buildings consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class Crops {
+		public AditionalInterestType ActivationThreshold {get;set;} 
+		public List<AdditionalCoverages> AdditionalCoverages {get;set;} 
+		public List<AdditionalInterestContacts> AdditionalInterestContacts {get;set;} 
+		public Addresses Address {get;set;} 
+		public Integer AverageWeight {get;set;} 
+		public AditionalInterestType ClassCode {get;set;} 
+		public Integer ClientInvestmentHa {get;set;} 
+		public Integer ClientInvestmentTotal {get;set;} 
+		public Boolean ComplementaryIrrigation {get;set;} 
+		public Coordinates Coordinates {get;set;} 
+		public List<AdditionalCoverages> Coverages {get;set;} 
+		public Integer CropQuote {get;set;} 
+		public Integer CropQuoteFinal {get;set;} 
+		public String CropType {get;set;} 
+		public String Description {get;set;} 
+		public Integer ExpectedPerformance {get;set;} 
+		public Integer FinalWeight {get;set;} 
+		public AditionalInterestType GenderType {get;set;} 
+		public Integer Head {get;set;} 
+		public Integer InsuredAmount {get;set;} 
+		public Integer InsuredAmountLoteQQ {get;set;} 
+		public Integer InsuredSuface {get;set;} 
+		public Integer InsuredSurface {get;set;} 
+		public Integer InvestmentHa {get;set;} 
+		public Integer InvestmentLote {get;set;} 
+		public AditionalInterestType LivestockActivity {get;set;} 
+		public Integer LivestockAge {get;set;} 
+		public AditionalInterestType LivestockCategory {get;set;} 
+		public String LivestockName {get;set;} 
+		public String LotName {get;set;} 
+		public String Observations {get;set;} 
+		public AditionalInterestType OutputRate {get;set;} 
+		public Integer Participation {get;set;} 
+		public Boolean Pedigree {get;set;} 
+		public Integer Performance {get;set;} 
+		public String PeriodEnd {get;set;} 
+		public String PublicId {get;set;} 
+		public Integer QQHa {get;set;} 
+		public String RatingEffDate {get;set;} 
+		public String RatingEndDate {get;set;} 
+		public String Raza {get;set;} 
+		public AditionalInterestType RiskArea {get;set;} 
+		public String RiskZone {get;set;} 
+		public String RodeoCategory {get;set;} 
+		public String Seedtime {get;set;} 
+		public Integer SpecialClassNumber {get;set;} 
+		public Integer StartingWeight {get;set;} 
+		public AditionalInterestType TillageType {get;set;} 
+		public String VarietyHybrid {get;set;} 
+
+		public Crops(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'ActivationThreshold') {
+							ActivationThreshold = new AditionalInterestType(parser);
+						} else if (text == 'AdditionalCoverages') {
+							AdditionalCoverages = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'AdditionalInterestContacts') {
+							AdditionalInterestContacts = arrayOfAdditionalInterestContacts(parser);
+						} else if (text == 'Address') {
+							Address = new Addresses(parser);
+						} else if (text == 'AverageWeight') {
+							AverageWeight = parser.getIntegerValue();
+						} else if (text == 'ClassCode') {
+							ClassCode = new AditionalInterestType(parser);
+						} else if (text == 'ClientInvestmentHa') {
+							ClientInvestmentHa = parser.getIntegerValue();
+						} else if (text == 'ClientInvestmentTotal') {
+							ClientInvestmentTotal = parser.getIntegerValue();
+						} else if (text == 'ComplementaryIrrigation') {
+							ComplementaryIrrigation = parser.getBooleanValue();
+						} else if (text == 'Coordinates') {
+							Coordinates = new Coordinates(parser);
+						} else if (text == 'Coverages') {
+							Coverages = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'CropQuote') {
+							CropQuote = parser.getIntegerValue();
+						} else if (text == 'CropQuoteFinal') {
+							CropQuoteFinal = parser.getIntegerValue();
+						} else if (text == 'CropType') {
+							CropType = parser.getText();
+						} else if (text == 'Description') {
+							Description = parser.getText();
+						} else if (text == 'ExpectedPerformance') {
+							ExpectedPerformance = parser.getIntegerValue();
+						} else if (text == 'FinalWeight') {
+							FinalWeight = parser.getIntegerValue();
+						} else if (text == 'GenderType') {
+							GenderType = new AditionalInterestType(parser);
+						} else if (text == 'Head') {
+							Head = parser.getIntegerValue();
+						} else if (text == 'InsuredAmount') {
+							InsuredAmount = parser.getIntegerValue();
+						} else if (text == 'InsuredAmountLoteQQ') {
+							InsuredAmountLoteQQ = parser.getIntegerValue();
+						} else if (text == 'InsuredSuface') {
+							InsuredSuface = parser.getIntegerValue();
+						} else if (text == 'InsuredSurface') {
+							InsuredSurface = parser.getIntegerValue();
+						} else if (text == 'InvestmentHa') {
+							InvestmentHa = parser.getIntegerValue();
+						} else if (text == 'InvestmentLote') {
+							InvestmentLote = parser.getIntegerValue();
+						} else if (text == 'LivestockActivity') {
+							LivestockActivity = new AditionalInterestType(parser);
+						} else if (text == 'LivestockAge') {
+							LivestockAge = parser.getIntegerValue();
+						} else if (text == 'LivestockCategory') {
+							LivestockCategory = new AditionalInterestType(parser);
+						} else if (text == 'LivestockName') {
+							LivestockName = parser.getText();
+						} else if (text == 'LotName') {
+							LotName = parser.getText();
+						} else if (text == 'Observations') {
+							Observations = parser.getText();
+						} else if (text == 'OutputRate') {
+							OutputRate = new AditionalInterestType(parser);
+						} else if (text == 'Participation') {
+							Participation = parser.getIntegerValue();
+						} else if (text == 'Pedigree') {
+							Pedigree = parser.getBooleanValue();
+						} else if (text == 'Performance') {
+							Performance = parser.getIntegerValue();
+						} else if (text == 'PeriodEnd') {
+							PeriodEnd = parser.getText();
+						} else if (text == 'PublicId') {
+							PublicId = parser.getText();
+						} else if (text == 'QQHa') {
+							QQHa = parser.getIntegerValue();
+						} else if (text == 'RatingEffDate') {
+							RatingEffDate = parser.getText();
+						} else if (text == 'RatingEndDate') {
+							RatingEndDate = parser.getText();
+						} else if (text == 'Raza') {
+							Raza = parser.getText();
+						} else if (text == 'RiskArea') {
+							RiskArea = new AditionalInterestType(parser);
+						} else if (text == 'RiskZone') {
+							RiskZone = parser.getText();
+						} else if (text == 'RodeoCategory') {
+							RodeoCategory = parser.getText();
+						} else if (text == 'Seedtime') {
+							Seedtime = parser.getText();
+						} else if (text == 'SpecialClassNumber') {
+							SpecialClassNumber = parser.getIntegerValue();
+						} else if (text == 'StartingWeight') {
+							StartingWeight = parser.getIntegerValue();
+						} else if (text == 'TillageType') {
+							TillageType = new AditionalInterestType(parser);
+						} else if (text == 'VarietyHybrid') {
+							VarietyHybrid = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'Crops consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class BusinessIncomes {
+		public List<AdditionalCoverages> AdditionalCoverages {get;set;} 
+		public List<Contact> AdditionalInterestContacts {get;set;} 
+		public Boolean AnyWaterfrontProperty {get;set;} 
+		public List<AdditionalCoverages> Conditions {get;set;} 
+		public AditionalInterestType CoverageFrom {get;set;} 
+		public List<AdditionalCoverages> Coverages {get;set;} 
+		public List<AdditionalCoverages> Exclusions {get;set;} 
+		public String PublicID {get;set;} 
+		public String TypeOfRisk {get;set;} 
+		public AditionalInterestType WatercraftExclBuybackConstr {get;set;} 
+		public String CombinedTypeOfRiskEducation {get;set;} 
+		public String CombinedTypeOfRiskManufactu {get;set;} 
+		public String CombinedTypeOfRiskMercantil {get;set;} 
+		public String CombinedTypeOfRiskRentalPct {get;set;} 
+
+		public BusinessIncomes(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'AdditionalCoverages') {
+							AdditionalCoverages = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'AdditionalInterestContacts') {
+							AdditionalInterestContacts = arrayOfContact(parser);
+						} else if (text == 'AnyWaterfrontProperty') {
+							AnyWaterfrontProperty = parser.getBooleanValue();
+						} else if (text == 'Conditions') {
+							Conditions = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'CoverageFrom') {
+							CoverageFrom = new AditionalInterestType(parser);
+						} else if (text == 'Coverages') {
+							Coverages = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'Exclusions') {
+							Exclusions = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else if (text == 'TypeOfRisk') {
+							TypeOfRisk = parser.getText();
+						} else if (text == 'WatercraftExclBuybackConstr') {
+							WatercraftExclBuybackConstr = new AditionalInterestType(parser);
+						} else if (text == 'CombinedTypeOfRiskEducation') {
+							CombinedTypeOfRiskEducation = parser.getText();
+						} else if (text == 'CombinedTypeOfRiskManufactu') {
+							CombinedTypeOfRiskManufactu = parser.getText();
+						} else if (text == 'CombinedTypeOfRiskMercantil') {
+							CombinedTypeOfRiskMercantil = parser.getText();
+						} else if (text == 'CombinedTypeOfRiskRentalPct') {
+							CombinedTypeOfRiskRentalPct = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'BusinessIncomes consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class Coordinates {
+		public Integer Latitude {get;set;} 
+		public Integer Longitude {get;set;} 
+
+		public Coordinates(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'Latitude') {
+							Latitude = parser.getIntegerValue();
+						} else if (text == 'Longitude') {
+							Longitude = parser.getIntegerValue();
+						} else {
+							System.debug(LoggingLevel.WARN, 'Coordinates consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class PreSubmissionRequest {
+		public Location Location {get;set;} 
+		public String PolicyPeriodId {get;set;} 
+
+		public PreSubmissionRequest(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'Location') {
+							Location = new Location(parser);
+						} else if (text == 'PolicyPeriodId') {
+							PolicyPeriodId = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'PreSubmissionRequest consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class TaxStatuses {
+		public AditionalInterestType EnrollementStatus {get;set;} 
+		public String PublicID {get;set;} 
+		public AditionalInterestType RetentionAgent {get;set;} 
+		public String StatusValue {get;set;} 
+		public Integer TaxPercentage {get;set;} 
+
+		public TaxStatuses(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'EnrollementStatus') {
+							EnrollementStatus = new AditionalInterestType(parser);
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else if (text == 'RetentionAgent') {
+							RetentionAgent = new AditionalInterestType(parser);
+						} else if (text == 'StatusValue') {
+							StatusValue = parser.getText();
+						} else if (text == 'TaxPercentage') {
+							TaxPercentage = parser.getIntegerValue();
+						} else {
+							System.debug(LoggingLevel.WARN, 'TaxStatuses consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class TermOptions {
+		public String DisplayText {get;set;} 
+		public String PublicID {get;set;} 
+		public Boolean SelectedValue {get;set;} 
+
+		public TermOptions(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'DisplayText') {
+							DisplayText = parser.getText();
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else if (text == 'SelectedValue') {
+							SelectedValue = parser.getBooleanValue();
+						} else {
+							System.debug(LoggingLevel.WARN, 'TermOptions consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class Contact {
+		public String Activitystartdate {get;set;} 
+		public List<Addresses> Addresses {get;set;} 
+		public Attorney Attorney {get;set;} 
+		public List<AvailablePhoneNumbers> AvailablePhoneNumbers {get;set;} 
+		public String CUIL {get;set;} 
+		public AditionalInterestType ContactType {get;set;} 
+		public String DateOfBirth {get;set;} 
+		public String EmailAddress1 {get;set;} 
+		public String EmailAddress2 {get;set;} 
+		public String FirstName {get;set;} 
+		public AditionalInterestType Gender {get;set;} 
+		public AditionalInterestType Industry {get;set;} 
+		public String InsuredNumberFormated {get;set;} 
+		public String LastName {get;set;} 
+		public MaritalStatus MaritalStatus {get;set;} 
+		public String Name {get;set;} 
+		public AditionalInterestType Nationality {get;set;} 
+		public AditionalInterestType Occupation {get;set;} 
+		public AditionalInterestType OfficialIDType {get;set;} 
+		public Boolean PEP {get;set;} 
+		public PreferredSettlementCurrency PreferredSettlementCurrency {get;set;} 
+		public Boolean PrimaryNamedInsured {get;set;} 
+		public AditionalInterestType PrimaryPhoneType {get;set;} 
+		public String PublicID {get;set;} 
+		public Boolean Resident {get;set;} 
+		public AditionalInterestType SchoolLevel {get;set;} 
+		public String TaxID {get;set;} 
+		public List<TaxStatuses> TaxStatuses {get;set;} 
+		public Boolean UIFFormSubmitted {get;set;} 
+
+		public Contact(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'Activitystartdate') {
+							Activitystartdate = parser.getText();
+						} else if (text == 'Addresses') {
+							Addresses = arrayOfAddresses(parser);
+						} else if (text == 'Attorney') {
+							Attorney = new Attorney(parser);
+						} else if (text == 'AvailablePhoneNumbers') {
+							AvailablePhoneNumbers = arrayOfAvailablePhoneNumbers(parser);
+						} else if (text == 'CUIL') {
+							CUIL = parser.getText();
+						} else if (text == 'ContactType') {
+							ContactType = new AditionalInterestType(parser);
+						} else if (text == 'DateOfBirth') {
+							DateOfBirth = parser.getText();
+						} else if (text == 'EmailAddress1') {
+							EmailAddress1 = parser.getText();
+						} else if (text == 'EmailAddress2') {
+							EmailAddress2 = parser.getText();
+						} else if (text == 'FirstName') {
+							FirstName = parser.getText();
+						} else if (text == 'Gender') {
+							Gender = new AditionalInterestType(parser);
+						} else if (text == 'Industry') {
+							Industry = new AditionalInterestType(parser);
+						} else if (text == 'InsuredNumberFormated') {
+							InsuredNumberFormated = parser.getText();
+						} else if (text == 'LastName') {
+							LastName = parser.getText();
+						} else if (text == 'MaritalStatus') {
+							MaritalStatus = new MaritalStatus(parser);
+						} else if (text == 'Name') {
+							Name = parser.getText();
+						} else if (text == 'Nationality') {
+							Nationality = new AditionalInterestType(parser);
+						} else if (text == 'Occupation') {
+							Occupation = new AditionalInterestType(parser);
+						} else if (text == 'OfficialIDType') {
+							OfficialIDType = new AditionalInterestType(parser);
+						} else if (text == 'PEP') {
+							PEP = parser.getBooleanValue();
+						} else if (text == 'PreferredSettlementCurrency') {
+							PreferredSettlementCurrency = new PreferredSettlementCurrency(parser);
+						} else if (text == 'PrimaryNamedInsured') {
+							PrimaryNamedInsured = parser.getBooleanValue();
+						} else if (text == 'PrimaryPhoneType') {
+							PrimaryPhoneType = new AditionalInterestType(parser);
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else if (text == 'Resident') {
+							Resident = parser.getBooleanValue();
+						} else if (text == 'SchoolLevel') {
+							SchoolLevel = new AditionalInterestType(parser);
+						} else if (text == 'TaxID') {
+							TaxID = parser.getText();
+						} else if (text == 'TaxStatuses') {
+							TaxStatuses = arrayOfTaxStatuses(parser);
+						} else if (text == 'UIFFormSubmitted') {
+							UIFFormSubmitted = parser.getBooleanValue();
+						} else {
+							System.debug(LoggingLevel.WARN, 'Contact consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class MaritalStatus {
+		public String Code {get;set;} 
+		public String DisplayName {get;set;} 
+
+		public MaritalStatus(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'Code') {
+							Code = parser.getText();
+						} else if (text == 'DisplayName') {
+							DisplayName = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'MaritalStatus consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class PersonalProperties {
+		public AssociatedBlanket AssociatedBlanket {get;set;} 
+		public List<AdditionalCoverages> AdditionalCoverages {get;set;} 
+		public AditionalInterestType CoverageType {get;set;} 
+		public List<AdditionalCoverages> Coverages {get;set;} 
+		public Boolean DecGoodsSupplies {get;set;} 
+		public Integer Limit_Z {get;set;} // in json: Limit
+		public String PublicID {get;set;} 
+		public List<AdditionalCoverages> ScheduledCoverages {get;set;} 
+
+		public PersonalProperties(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'AssociatedBlanket') {
+							AssociatedBlanket = new AssociatedBlanket(parser);
+						} else if (text == 'AdditionalCoverages') {
+							AdditionalCoverages = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'CoverageType') {
+							CoverageType = new AditionalInterestType(parser);
+						} else if (text == 'Coverages') {
+							Coverages = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'DecGoodsSupplies') {
+							DecGoodsSupplies = parser.getBooleanValue();
+						} else if (text == 'Limit') {
+							Limit_Z = parser.getIntegerValue();
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else if (text == 'ScheduledCoverages') {
+							ScheduledCoverages = arrayOfAdditionalCoverages(parser);
+						} else {
+							System.debug(LoggingLevel.WARN, 'PersonalProperties consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class AdditionalDataBankRequest {
+		public String PolicyPeriodId {get;set;} 
+		public String VehiclePublicId {get;set;} 
+		public AdditionalDataBank AdditionalDataBank {get;set;} 
+
+		public AdditionalDataBankRequest(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'PolicyPeriodId') {
+							PolicyPeriodId = parser.getText();
+						} else if (text == 'VehiclePublicId') {
+							VehiclePublicId = parser.getText();
+						} else if (text == 'AdditionalDataBank') {
+							AdditionalDataBank = new AdditionalDataBank(parser);
+						} else {
+							System.debug(LoggingLevel.WARN, 'AdditionalDataBankRequest consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class AssociatedBlanket {
+		public String Description {get;set;} 
+		public String PublicID {get;set;} 
+		public AditionalInterestType BlanketCovType {get;set;} 
+		public Integer BlanketNumber {get;set;} 
+		public String CoverageType {get;set;} 
+		public List<AdditionalCoverages> Coverages {get;set;} 
+		public List<Risks> Risks {get;set;} 
+
+		public AssociatedBlanket(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'Description') {
+							Description = parser.getText();
+						} else if (text == 'PublicID') {
+							PublicID = parser.getText();
+						} else if (text == 'BlanketCovType') {
+							BlanketCovType = new AditionalInterestType(parser);
+						} else if (text == 'BlanketNumber') {
+							BlanketNumber = parser.getIntegerValue();
+						} else if (text == 'CoverageType') {
+							CoverageType = parser.getText();
+						} else if (text == 'Coverages') {
+							Coverages = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'Risks') {
+							Risks = arrayOfRisks(parser);
+						} else {
+							System.debug(LoggingLevel.WARN, 'AssociatedBlanket consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class Attorney {
+		public String DocumentNumber {get;set;} 
+		public String FirstName {get;set;} 
+		public AditionalInterestType Gender {get;set;} 
+		public AditionalInterestType IDDocumentType {get;set;} 
+		public String LastName {get;set;} 
+
+		public Attorney(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'DocumentNumber') {
+							DocumentNumber = parser.getText();
+						} else if (text == 'FirstName') {
+							FirstName = parser.getText();
+						} else if (text == 'Gender') {
+							Gender = new AditionalInterestType(parser);
+						} else if (text == 'IDDocumentType') {
+							IDDocumentType = new AditionalInterestType(parser);
+						} else if (text == 'LastName') {
+							LastName = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'Attorney consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public class Location {
+		public List<AdditionalInterestContacts> AdditionalInterestContacts {get;set;} 
+		public Addresses Address {get;set;} 
+		public List<Buildings> Buildings {get;set;} 
+		public List<AdditionalCoverages> Coverages {get;set;} 
+		public List<Crops> Crops {get;set;} 
+		public String LocationNote {get;set;} 
+		public String PublicId {get;set;} 
+		public List<SpecificRisks> SpecificRisks {get;set;} 
+
+		public Location(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'AdditionalInterestContacts') {
+							AdditionalInterestContacts = arrayOfAdditionalInterestContacts(parser);
+						} else if (text == 'Address') {
+							Address = new Addresses(parser);
+						} else if (text == 'Buildings') {
+							Buildings = arrayOfBuildings(parser);
+						} else if (text == 'Coverages') {
+							Coverages = arrayOfAdditionalCoverages(parser);
+						} else if (text == 'Crops') {
+							Crops = arrayOfCrops(parser);
+						} else if (text == 'LocationNote') {
+							LocationNote = parser.getText();
+						} else if (text == 'PublicId') {
+							PublicId = parser.getText();
+						} else if (text == 'SpecificRisks') {
+							SpecificRisks = arrayOfSpecificRisks(parser);
+						} else {
+							System.debug(LoggingLevel.WARN, 'Location consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	
+	public static SCEmitirParser parse(String json) {
+		System.JSONParser parser = System.JSON.createParser(json);
+		return new SCEmitirParser(parser);
+	}
+	
+	public static void consumeObject(System.JSONParser parser) {
+		Integer depth = 0;
+		do {
+			System.JSONToken curr = parser.getCurrentToken();
+			if (curr == System.JSONToken.START_OBJECT || 
+				curr == System.JSONToken.START_ARRAY) {
+				depth++;
+			} else if (curr == System.JSONToken.END_OBJECT ||
+				curr == System.JSONToken.END_ARRAY) {
+				depth--;
+			}
+		} while (depth > 0 && parser.nextToken() != null);
+	}
+	
+
+    private static List<AvailablePhoneNumbers> arrayOfAvailablePhoneNumbers(System.JSONParser p) {
+        List<AvailablePhoneNumbers> res = new List<AvailablePhoneNumbers>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new AvailablePhoneNumbers(p));
+        }
+        return res;
+    }
+
+
+
+    private static List<PersonalProperties> arrayOfPersonalProperties(System.JSONParser p) {
+        List<PersonalProperties> res = new List<PersonalProperties>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new PersonalProperties(p));
+        }
+        return res;
+    }
+
+
+
+    private static List<ScheduleItems> arrayOfScheduleItems(System.JSONParser p) {
+        List<ScheduleItems> res = new List<ScheduleItems>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new ScheduleItems(p));
+        }
+        return res;
+    }
+
+
+    private static List<AdditionalInterestContacts> arrayOfAdditionalInterestContacts(System.JSONParser p) {
+        List<AdditionalInterestContacts> res = new List<AdditionalInterestContacts>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new AdditionalInterestContacts(p));
+        }
+        return res;
+    }
+
+
+    private static List<Occupancies> arrayOfOccupancies(System.JSONParser p) {
+        List<Occupancies> res = new List<Occupancies>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new Occupancies(p));
+        }
+        return res;
+    }
+
+
+
+
+
+
+
+    private static List<TermOptions> arrayOfTermOptions(System.JSONParser p) {
+        List<TermOptions> res = new List<TermOptions>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new TermOptions(p));
+        }
+        return res;
+    }
+
+    private static List<Buildings> arrayOfBuildings(System.JSONParser p) {
+        List<Buildings> res = new List<Buildings>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new Buildings(p));
+        }
+        return res;
+    }
+
+
+
+
+
+
+
+
+    private static List<AdditionalCoverages> arrayOfAdditionalCoverages(System.JSONParser p) {
+        List<AdditionalCoverages> res = new List<AdditionalCoverages>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new AdditionalCoverages(p));
+        }
+        return res;
+    }
+
+
+
+    private static List<BusinessIncomes> arrayOfBusinessIncomes(System.JSONParser p) {
+        List<BusinessIncomes> res = new List<BusinessIncomes>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new BusinessIncomes(p));
+        }
+        return res;
+    }
+
+
+    private static List<Coverages> arrayOfCoverages(System.JSONParser p) {
+        List<Coverages> res = new List<Coverages>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new Coverages(p));
+        }
+        return res;
+    }
+
+
+
+    private static List<Crops> arrayOfCrops(System.JSONParser p) {
+        List<Crops> res = new List<Crops>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new Crops(p));
+        }
+        return res;
+    }
+
+
+    private static List<Addresses> arrayOfAddresses(System.JSONParser p) {
+        List<Addresses> res = new List<Addresses>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new Addresses(p));
+        }
+        return res;
+    }
+
+
+    private static List<CoverageTerms> arrayOfCoverageTerms(System.JSONParser p) {
+        List<CoverageTerms> res = new List<CoverageTerms>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new CoverageTerms(p));
+        }
+        return res;
+    }
+
+
+
+    private static List<SpecificRisks> arrayOfSpecificRisks(System.JSONParser p) {
+        List<SpecificRisks> res = new List<SpecificRisks>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new SpecificRisks(p));
+        }
+        return res;
+    }
+
+
+
+
+
+
+
+
+    private static List<Attributes> arrayOfAttributes(System.JSONParser p) {
+        List<Attributes> res = new List<Attributes>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new Attributes(p));
+        }
+        return res;
+    }
+
+
+    private static List<Risks> arrayOfRisks(System.JSONParser p) {
+        List<Risks> res = new List<Risks>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new Risks(p));
+        }
+        return res;
+    }
+
+    private static List<TaxStatuses> arrayOfTaxStatuses(System.JSONParser p) {
+        List<TaxStatuses> res = new List<TaxStatuses>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new TaxStatuses(p));
+        }
+        return res;
+    }
+
+
+
+    private static List<Contact> arrayOfContact(System.JSONParser p) {
+        List<Contact> res = new List<Contact>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new Contact(p));
+        }
+        return res;
+    }
+
+
+}

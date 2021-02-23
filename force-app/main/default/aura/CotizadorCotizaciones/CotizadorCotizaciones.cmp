@@ -1,0 +1,77 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes" 
+                access="global" 
+                controller="CotizadorCotizacionesController">
+    
+    <!-- ATTRIBUTES-->
+    <aura:attribute name="isLoading" type="boolean" default="true"/>
+
+    <aura:attribute name="cliente" type="Object" />
+    <aura:attribute name="auto" type="Object" />
+    <aura:attribute name="oppId" type="String" />
+    
+    <aura:attribute name="cotizacion" type="Object" />
+
+    <aura:attribute name="selectedRows" type="List" default="[]" />
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="dataVida" type="Object"/>
+    <aura:attribute name="dataNomina" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="columnsVida" type="List"/>
+    <aura:attribute name="columnsNomina" type="List"/>
+    
+    <aura:attribute name="mostrarCotizacionesVida" type="boolean" default="false" />
+    <aura:attribute name="mostrarNomina" type="boolean" default="false" />
+
+    <aura:attribute name="nomina" type="Object"/>
+
+    <aura:attribute name="sancorCallout" type="boolean" default="false" />
+    <aura:attribute name="sanCristobalCallout" type="boolean" default="false" />
+    
+    
+    <!-- HANDLERS -->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    <!-- MARKUP -->
+    <div class="demo-only">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close" class="slds-modal__close" size="large" variant="bare" alternativeText="Close" onclick="{! c.closeModal }"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Cotizaciones</h2>
+                </header>
+
+                <aura:if isTrue="{!v.isLoading}">
+                    <!-- <lightning:spinner/> -->
+                    <!-- SPINNERS -->
+                    <aura:if isTrue="{!v.sancorCallout}">
+                        <lightning:spinner class="spinsSANCOR" size="large" variant="brand" alternativeText="Loading" />
+                    </aura:if>
+
+                    <aura:if isTrue="{!v.sanCristobalCallout}">
+                        <lightning:spinner class="spinsSANCRISTOBAL" size="large" variant="brand" alternativeText="Loading" />
+                    </aura:if>
+
+                    <aura:set attribute="else">     
+                        <div class="slds-modal__content slds-p-around_medium" style="height:auto;"  id="modal-content-id-1">
+                            <c:CotizadorCotizacionesDataTable cliente="{!v.cliente}" 
+                                                            auto="{!v.auto}" 
+                                                            oppId="{!v.oppId}" 
+                                                            cotizacion="{!v.cotizacion}"
+                                                            data="{!v.data}"
+                                                            columns="{!v.columns}"
+                                                            dataVida="{!v.dataVida}"
+                                                            columnsVida="{!v.columnsVida}"
+                                                            mostrarCotizacionesVida="{!v.mostrarCotizacionesVida}"
+                                                            columnsNomina="{!v.columnsNomina}"
+                                                            nomina="{!v.nomina}" />
+                        </div>
+                    </aura:set>
+                </aura:if>
+                
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+
+</aura:component>

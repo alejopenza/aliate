@@ -1,0 +1,65 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes"
+                access="global"
+                controller="CotizadorDatosDeVidaController">
+    
+    <!-- ATTRIBUTES -->
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="showAddEmployee" type="boolean" default="false" />
+    
+    <aura:attribute name="nuevos" type="List" default="[]" />
+    <aura:attribute name="nuevo" type="Object" />
+    
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="data" type="Object"/>
+    
+    <aura:attribute name="isLoading" type="boolean" default="true" />
+    
+    <!-- HANDLERS -->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    <!-- MARKUP -->
+    <aura:if isTrue="{!v.isLoading}">
+        <lightning:spinner />
+        <aura:set attribute="else">
+            <aura:if isTrue="{!v.showAddEmployee}">
+                
+                <lightning:card title="Cargar Empleados">
+                    <lightning:input label="Numero Adherente" type="number" value="{!v.nuevo.nroAdherente}" />
+                    <lightning:input label="Apellido y Nombre" type="text" value="{!v.nuevo.apellidoYNombre}" />
+                    <lightning:input label="Tipo y Numero de Documento" type="text" value="{!v.nuevo.tipoYNumeroDocumento}" />
+                    <lightning:input label="Fecha de Nacimiento" type="date" value="{!v.nuevo.fechaNacimiento}" />
+                    <lightning:input label="Fecha de Alta" type="date" value="{!v.nuevo.fechaAlta}" />
+                    <lightning:input label="Grupo Adherente" type="text" value="{!v.nuevo.grupoAdherente}" />
+                    
+                    <!--<lightning:input label="Numero Adherente" type="number" aura:id="nroAdherente" />
+                    <lightning:input label="Apellido y Nombre" type="text" aura:id="apellidoYNombre" />
+                    <lightning:input label="Tipo y Numero de Documento" type="text" aura:id="tipoYNumeroDocumento" />
+                    <lightning:input label="Fecha de Nacimiento" type="date" aura:id="fechaNacimiento" />
+                    <lightning:input label="Fecha de Alta" type="date" aura:id="fechaAlta" />
+                    <lightning:input label="Grupo Adherente" type="text" aura:id="grupoAdherente" />-->
+                    <aura:set attribute="footer">
+                    	<lightning:button variant="brand" label="AGREGAR" title="AGREGAR" onclick="{! c.handleDoAgregar }"/>
+                        <lightning:button variant="brand" label="GUARDAR" title="GUARDAR" onclick="{! c.handleDoGuardar }"/>
+                        <lightning:button variant="brand" label="ATRAS" title="ATRAS" onclick="{! c.handleDoAtras }"/>
+                    </aura:set>
+                </lightning:card>
+                
+                <aura:set attribute="else">
+                    <lightning:card title="Empleados">
+                        <lightning:datatable aura:id="linesTable"
+                                             columns="{! v.columns }"
+                                             data="{! v.data }"
+                                             keyField="id"
+                                             class="table"/>
+                        <aura:set attribute="footer">
+                            <lightning:button variant="brand" label="REMOVER" title="REMOVER" onclick="{! c.handleRemover }"/>
+                            <lightning:button variant="brand" label="CARGAR EMPLEADOS" title="CARGAR EMPLEADOS" onclick="{! c.handleCargarEmpleados }"/>
+                        </aura:set>
+                    </lightning:card>
+                </aura:set>
+                
+            </aura:if>
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

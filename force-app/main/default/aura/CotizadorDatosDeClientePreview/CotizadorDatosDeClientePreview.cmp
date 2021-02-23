@@ -1,0 +1,64 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes" 
+                access="global" 
+                controller="CotizadorController">
+    <!-- ATTRIBUTES-->
+    <aura:attribute name="isLoading" type="boolean" />
+    <aura:attribute name="cliente" type="Object" />
+    
+    <!-- HANDLERS -->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    <!-- MARKUP -->
+    <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+        <div class="slds-size_1-of-1">
+            <lightning:card title="Cliente" class="slds-p-around_xx-small">
+                
+                <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                    
+                    <aura:if isTrue="{!v.cliente.tipoDeDocumento == 'DNI'}">
+                        <div class="slds-size_1-of-2">
+                            <label>Apellido<br/>
+                                <input type="text" id="name" value="{!v.cliente.apellido}" disabled="true" />
+                            </label>
+                        </div>
+                        <div class="slds-size_1-of-2">
+                            <label>Nombre<br/>
+                                <input type="text" id="dni" value="{!v.cliente.nombre}" disabled="true" />
+                            </label>
+                        </div>
+                    </aura:if>
+
+                    <aura:if isTrue="{!v.cliente.tipoDeDocumento == 'CUIT'}">
+                        <div class="slds-size_1-of-2">
+                            <label>Razon Social<br/>
+                                <input type="text" id="dni" value="{!v.cliente.nombre}" disabled="true" />
+                            </label>
+                        </div>
+                    </aura:if>
+                    
+                </div>
+                
+                <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                    <div class="slds-size_1-of-2">
+                        <aura:if isTrue="{!v.cliente.tipoDeDocumento == 'DNI'}">
+                            <label>Numero de Documento<br/>
+                                <input type="text" id="dni" value="{!v.cliente.Numero_de_Documento}" disabled="true" />
+                            </label>
+                        </aura:if>
+                        <aura:if isTrue="{!v.cliente.tipoDeDocumento == 'CUIT'}">
+                            <label>Numero de CUIT<br/>
+                                <input type="text" id="dni" value="{!v.cliente.Numero_de_Documento}" disabled="true" />
+                            </label>
+                        </aura:if>
+                    </div>
+                    <div class="slds-size_1-of-2">
+                        <lightning:input label="Codigo Postal" value="{!v.cliente.Codigo_Postal}" />
+                    </div>
+                    
+                </div>
+                
+            </lightning:card>
+        </div>
+    </div>
+    
+</aura:component>

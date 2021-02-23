@@ -1,0 +1,10 @@
+@isTest
+global with sharing class SCAccidentesPersonalesEmisionMock500 implements HttpCalloutMock {
+    global HTTPResponse respond(HTTPRequest req) {
+        HttpResponse res = new HttpResponse();
+        //TODO el body siguiente habría que reemplazarlo por una response 500 REAL
+        res.setBody('{"Response":null,"HasError":true,"HasWarning":false,"HasInformation":false,"Messages":[{"NombreServicio":"","VersionServicio":"","Description":"Error.","MessageBeautiful":"Object reference not set to an instance of an object.","StackTrace":"   at B2BApp.Models.IssueSubmission.IssueSubmissionAccidentesPersonales.<Issue>d__4.MoveNext() in C:\\agent-win10\\_work\\61\\s\\src\\Models\\IssueSubmission\\IssueSubmissionAAH\\IssueSubmissionAccidentesPersonales\\IssueSubmissionAccidentesPersonales.cs:line 60\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()\r\n   at B2BApp.Models.IssueSubmission.IssueSubmissionManager.<Issue>d__27.MoveNext() in C:\\agent-win10\\_work\\61\\s\\src\\Models\\IssueSubmission\\IssueSubmissionManager.cs:line 301\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()\r\n   at B2BApp.Controllers.IssueSubmissionController.<IssueSubmissionAAH>d__7.MoveNext() in C:\\agent-win10\\_work\\61\\s\\src\\Controllers\\IssueSubmissionController.cs:line 133","ErrorLevel":2}]}');
+        res.setStatusCode(500);
+        return res;
+    }
+}

@@ -1,0 +1,31 @@
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" 
+                access="global" 
+                controller="CotizarEndosoController">
+    <aura:attribute name="recordId" type="String" default="" />
+    <aura:attribute name="isLoading" type="Boolean" default="true" />
+
+    <aura:attribute name="ramo" type="String" default=""/>
+    <aura:attribute name="cliente" type="Object" />
+    <aura:attribute name="cotizacion" type="Object" />
+
+    <aura:attribute name="auto" type="Object" />
+    <aura:attribute name="nomina" type="Object" />
+    
+
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+
+    <aura:if isTrue="{!v.isLoading}">
+        <lightning:spinner />
+
+        <aura:set attribute="else">
+            <c:Cotizador isLoading="{!v.isLoading}" 
+                            cliente="{!v.cliente}" 
+                            auto="{!v.auto}" 
+                            oppId="{!v.recordId}" 
+                            ramo="{!v.ramo}" 
+                            cotizacion="{!v.cotizacion}"
+                            nomina="{!v.nomina}" />
+        </aura:set>
+    </aura:if>
+
+</aura:component>

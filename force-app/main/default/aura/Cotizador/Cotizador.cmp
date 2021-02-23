@@ -1,0 +1,48 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes"
+                access="global"
+                controller="CotizadorController">
+
+    <!-- ATTRIBUTES-->
+    <aura:attribute name="isLoading" type="boolean" default="true" />
+    <aura:attribute name="cliente" type="Object" />
+    <aura:attribute name="auto" type="Object" />
+    <aura:attribute name="cotizacion" type="Object" />
+
+    <aura:attribute name="ramo" type="String" default="Automotor"/>
+    <aura:attribute name="oppId" type="String" />
+
+    <aura:attribute name="nomina" type="Object" />
+
+    <!-- HANDLERS -->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler name="eventoCotizaciones" event="c:CotizadorMostrarCotizaciones" action="{!c.handleEventoCotizaciones}"/>
+    <aura:handler name="eventoAtras" event="c:CotizadorAtras" action="{!c.handleEventoAtras}"/>
+    <aura:handler name="eventoEnviarYGuardar" event="c:CotizadorEnviarYGuardar" action="{!c.handleEnviarYGuardar}"/>
+
+    <!-- EVENT -->
+
+    <!-- MARKUP -->
+    <aura:if isTrue="{!v.isLoading}">
+        <lightning:spinner />
+    	<aura:set attribute="else">
+
+            <aura:if isTrue="{!v.cliente == null}">
+                <c:CotizadorDatosDeCliente cliente="{!v.cliente}" nomina="{!v.nomina}" />
+                <aura:set attribute="else">
+                    <c:CotizadorDatosDeClientePreview cliente="{!v.cliente}" />
+                    <aura:if isTrue="{!v.ramo == 'Automotor'}">
+                        <aura:set attribute="else">
+                            <!--c:CotizadorDatosDeVida data="{!v.nomina}" recordId="{!v.oppId}"/-->
+                        </aura:set>
+                        <c:CotizadorDatosDelAuto auto="{!v.auto}" recordId="{!v.oppId}" cotizacion="{!v.cotizacion}" nomina="{!v.nomina}" />
+                    </aura:if>
+                </aura:set>
+            </aura:if>
+
+            <!-- COTIZACIONES MODAL -->
+            <div aura:id="cotizaciones" ></div>
+            
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

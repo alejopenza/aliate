@@ -1,0 +1,72 @@
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+<aura:attribute name="recordId" type="String" default="" />
+<aura:attribute name="isLoading" type="boolean" default="true" />
+<aura:attribute name="poliza" type="Object" />
+<aura:attribute name="auto" type="Object" />
+
+<aura:handler name="init" value="{! this }" action="{! c.init }"/>
+
+<aura:if isTrue="{!v.isLoading}">
+        <lightning:spinner />
+        
+    	<aura:set attribute="else">
+            <!--c:Cotizador isLoading="{!v.isLoading}" cliente="{!v.cliente}" auto="{!v.auto}" /-->
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                <div class="slds-size_1-of-3"></div>
+                <div class="slds-size_1-of-3">
+                    <lightning:card title="Datos de Cliente">
+                        
+                        <lightning:select aura:id="sexo" name="sexo" label="Sexo" required="true" value="{!v.sexo}">
+                            <option value="">SELECCIONAR</option>
+                            <aura:iteration items="{!v.sexos}" var="sexo">
+                                <option value="{!sexo}">{!sexo}</option>
+                            </aura:iteration>
+                        </lightning:select>
+                        
+                        <lightning:select aura:id="tipoDocumento" name="tipoDocumento" label="Tipo de Documento" required="true" value="{!v.typeSelected}">
+                            <option value="">SELECCIONAR</option>
+                            <aura:iteration items="{!v.types}" var="type">
+                                <option value="{!type}">{!type}</option>
+                            </aura:iteration>
+                        </lightning:select>
+                        
+                        <aura:if isTrue="{!v.typeSelected}">
+                            <lightning:input name="numero" aura:id="numero" label="Numero" type="number" value="{!v.dni}" />
+                        </aura:if>
+                        
+                        <aura:set attribute="footer">
+                            <aura:if isTrue="{!v.dni != null}">
+                                <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                                    <div class="slds-size_1-of-4"></div>
+                                    <div class="slds-size_1-of-4"></div>
+                                    <div class="slds-size_1-of-4"></div>
+                                    <div class="slds-size_1-of-4">
+                                        <lightning:button class="slds-m-top_small" variant="brand" onclick="{!c.doNext}" name="update" label="BUSCAR" />
+                                    </div>
+                                </div>
+                            </aura:if>
+                        </aura:set>
+                        
+                    </lightning:card>
+                </div>
+                <div class="slds-size_1-of-3"></div>
+            </div>
+        </aura:set>
+</aura:if>
+    
+    <!--lightning:recordEditForm objectApiName="Opportunity" 
+                                          recordId="{!v.cotizacion.Id}"
+                                          aura:id="editForm">
+	<lightning:layout horizontalAlign="space">
+                        <lightning:layoutItem padding="around-small">
+                            <lightning:inputField aura:id="numeroDeDocumento" fieldName="Numero_de_Documento__c" required="true" />
+                            <lightning:inputField aura:id="nombreCliente" fieldName="Nombre_Cliente__c" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small">
+                            <lightning:inputField aura:id="codigoPostalRiesgo" fieldName="Codigo_Postal_Riesgo__c" />
+                            <lightning:inputField aura:id="codigoPostalCliente" fieldName="Codigo_Postal_Cliente__c" />
+                        </lightning:layoutItem>
+	</lightning:layout>
+    </lightning:recordEditForm-->
+
+</aura:component>

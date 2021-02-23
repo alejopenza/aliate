@@ -1,0 +1,112 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes" 
+                access="global" 
+                controller="CotizadorController">
+    
+    <!-- attributes -->
+    <aura:attribute name="selectedRows" type="List" default="[]" />
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="dataVida" type="Object"/>
+    <aura:attribute name="dataNomina" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="columnsVida" type="List"/>
+    <aura:attribute name="columnsNomina" type="List"/>
+    <aura:attribute name="isLoading" type="boolean" default="false" />
+    
+    <aura:attribute name="cliente" type="Object" />
+    <aura:attribute name="auto" type="Object" />
+    <aura:attribute name="oppId" type="String" default="" />
+    
+    <aura:attribute name="mostrarCotizacionesVida" type="boolean" default="false" />
+    <aura:attribute name="mostrarNomina" type="boolean" default="false" />
+    
+    <aura:attribute name="cotizacion" type="Object" />
+    <aura:attribute name="nomina" type="Object"/>
+    
+    <!-- handlers-->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    <aura:if isTrue="{!v.isLoading}">
+        <!-- SPINNER -->
+        <lightning:spinner />
+        
+        <!-- COMPONENT-->
+        <aura:set attribute="else">
+            <aura:if isTrue="{!v.mostrarNomina}">
+                <lightning:card title="Empleados">
+                    <lightning:datatable aura:id="linesTable"
+                                        onrowselection="{! c.logSelectedRows }"
+                                        columns="{! v.columnsNomina }"
+                                        data="{! v.nomina }"
+                                        keyField="id"
+                                        hideCheckboxColumn="true" />
+                    <aura:set attribute="footer">
+                        <lightning:button variant="brand" label="ATRAS" title="ATRAS" onclick="{! c.handleAtras }"/>
+                    </aura:set>
+                </lightning:card>
+            </aura:if>
+            
+            <aura:if isTrue="{!!v.mostrarNomina}">
+                <lightning:card>
+                    
+                    <!-- AUTO -->
+                    <lightning:card title="AUTOMOVIL">
+                        <lightning:datatable aura:id="linesTable"
+                                            onrowselection="{! c.logSelectedRows }"
+                                            columns="{! v.columns }"
+                                            data="{! v.data }"
+                                            keyField="id"
+                                            hideCheckboxColumn="true"/>
+                    </lightning:card>
+                    
+                    <!-- VIDA -->
+                    <aura:if isTrue="{!v.mostrarCotizacionesVida}">
+                        <lightning:card title="VIDA COLECTIVO">
+                            <lightning:datatable aura:id="linesTable2"
+                                                onrowselection="{! c.logSelectedRows }"
+                                                columns="{! v.columnsVida }"
+                                                data="{! v.dataVida }"
+                                                keyField="id"
+                                                hideCheckboxColumn="true"/>
+                        </lightning:card>
+                    </aura:if>
+                    
+                    <aura:set attribute="footer">
+                        <lightning:input required="true" type="email" value="{!v.cliente.email}" label="Correo Electronico" />
+                        <br/>
+                        
+                        <div class="demo-only demo-only--sizing slds-grid slds-wrap container-botones">
+                            
+                            <div class="slds-size_1-of-3">
+                                <!--<aura:if isTrue="{!!and(v.cliente.es_empleador,!v.mostrarCotizacionesVida)}">-->
+                                <aura:if isTrue="{!v.mostrarCotizacionesVida}">
+                                    <lightning:button variant="brand" label="VER NOMINA" title="VER NOMINA" onclick="{! c.handleVerNomina }"/>
+                                </aura:if>
+                            </div>
+                            
+                            <div class="slds-size_1-of-3">
+                                <aura:if isTrue="{!v.oppId}">
+                                    <aura:set attribute="else">
+                                        <aura:if isTrue="{!and(v.cliente.es_empleador,!v.mostrarCotizacionesVida)}">
+                                            <aura:set attribute="else">
+                                                <lightning:button variant="brand" label="SOLO AUTOMOVIL" title="SOLO AUTOMOVIL" onclick="{! c.handleSoloAutomovil }"/>
+                                            </aura:set>
+                                            <lightning:button variant="success" label="COTIZAR VIDA" title="COTIZAR VIDA" onclick="{! c.handleCotizarVida }"/>
+                                        </aura:if>
+                                    </aura:set>
+                                </aura:if>
+                            </div>
+                            
+                            <div class="slds-size_1-of-3">
+                                <lightning:button variant="brand" label="ENVIAR" title="ENVIAR" onclick="{! c.handleEnviar }"/>
+                            </div>
+                            
+                        </div>
+                        
+                    </aura:set>
+                    
+                </lightning:card>
+            </aura:if>
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

@@ -1,0 +1,70 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes" 
+                access="global" 
+                controller="CotizadorController">
+    
+    <!-- ATTRIBUTES-->
+    <aura:attribute name="isLoading" type="boolean" />
+    
+    <aura:attribute name="typeSelected" type="String" default="" />
+    <aura:attribute name="types" type="List" default="['DNI','CUIT']" />
+    <aura:attribute name="dni" type="String" />
+    <aura:attribute name="sexos" type="List" default="['MASCULINO','FEMENINO']" />
+    <aura:attribute name="sexo" type="String" />
+    
+    <aura:attribute name="cliente" type="Object" />
+    <aura:attribute name="nomina" type="Object" />
+    
+    <!-- HANDLERS -->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    <!-- MARKUP -->
+    <aura:if isTrue="{!v.isLoading}">
+        
+        <lightning:spinner />
+        
+        <aura:set attribute="else">
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                <div class="slds-size_1-of-1">
+                    <lightning:card title="Buscar Cliente" class="slds-p-horizontal_x-small">
+                        
+                        <lightning:select aura:id="tipoDocumento" name="tipoDocumento" label="Tipo de Documento" required="true" value="{!v.typeSelected}">
+                            <option value="">SELECCIONAR</option>
+                            <aura:iteration items="{!v.types}" var="type">
+                                <option value="{!type}">{!type}</option>
+                            </aura:iteration>
+                        </lightning:select>
+
+                        <aura:if isTrue="{!v.typeSelected}">
+                            <aura:if isTrue="{!v.typeSelected == 'DNI'}">
+                                <lightning:select aura:id="sexo" name="sexo" label="Sexo" required="true" value="{!v.sexo}">
+                                    <option value="">SELECCIONAR</option>
+                                    <aura:iteration items="{!v.sexos}" var="sexo">
+                                        <option value="{!sexo}">{!sexo}</option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </aura:if>
+                            <lightning:input name="numero" aura:id="numero" label="Numero" type="number" value="{!v.dni}" />
+                        </aura:if>
+
+                        <aura:set attribute="footer">
+                            <aura:if isTrue="{!v.dni != null}">
+                                <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                                    <div class="slds-size_1-of-4"></div>
+                                    <div class="slds-size_1-of-4"></div>
+                                    <div class="slds-size_1-of-4"></div>
+                                    <div class="slds-size_1-of-4">
+                                        <lightning:button class="slds-m-top_small" variant="brand" onclick="{!c.doNext}" name="update" label="BUSCAR" />
+                                    </div>
+                                </div>
+                            </aura:if>
+                        </aura:set>
+                        
+                    </lightning:card>
+                </div>
+            </div>
+            
+            
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

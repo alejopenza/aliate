@@ -1,0 +1,300 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes,force:hasRecordId" 
+                access="global" 
+                controller="CotizadorDatosDelAutoController">
+    <!-- ATTRIBUTES-->
+    <aura:attribute name="isLoading" type="boolean" />
+    <aura:attribute name="auto" type="Object" />
+    <aura:attribute name="cotizacion" type="Object" />
+    <aura:attribute name="activeSections" type="List" default="['AUTO','AJUSTE']" />
+    <aura:attribute name="recordId" type="String" default=''/>
+    <aura:attribute name="mediosDePago" type="List" />
+    
+    <aura:attribute name="options" type="List" default="[]"/>
+    <aura:attribute name="value" type="List" />
+
+    <aura:attribute name="optionsCoberturasSC" type="List" default="[]"/>
+    <aura:attribute name="valueCoberturasSC" type="List" />    
+    
+    <aura:attribute name="optionsAccesorios" type="List" default="[]"/>
+    <aura:attribute name="optionsValidez" type="List" default="[]"/>
+    <aura:attribute name="optionsFrecuencia" type="List" default="[]"/>
+    <aura:attribute name="cuotas" type="List" default="[1,2,3,4,5,6]"/>
+
+    <aura:attribute name="marcasIA" type="List" default="[]"/>
+    <aura:attribute name="modelosIA" type="List" default="[]"/>
+    <aura:attribute name="versionesIA" type="List" default="[]"/>
+    <aura:attribute name="aniosIA" type="List" default="[]"/>
+
+    <aura:attribute name="nomina" type="List" />
+
+    <!-- HANDLERS -->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    <!-- EVENTS -->
+    <aura:registerEvent name="eventoCotizaciones" type="c:CotizadorMostrarCotizaciones"/>
+    <aura:registerEvent name="eventoAtras" type="c:CotizadorAtras"/>
+    
+    <!-- MARKUP -->
+    <aura:if isTrue="{!v.isLoading}">
+        <aura:set attribute="else">
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                    <div class="slds-size_1-of-1">
+                    <lightning:card title="Datos del Riesgo">
+                        
+                        <!-- ACCORDION -->
+                        <lightning:accordion aura:id="accordion" activeSectionName="{!v.activeSections}" allowMultipleSectionsOpen="true" >
+                            
+                            <lightning:accordionSection name="AUTO" label="Auto">
+                                <aura:set attribute="body">
+                                    
+                                    <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                                        <div class="slds-size_1-of-2">
+                                            <lightning:select required="true" name="marca" label="Marca" value="{!v.auto.marca}" onchange="{!c.handleChangeMarca}">
+                                                <option value="">-- SELECCIONAR --</option>
+                                                <aura:iteration items="{!v.marcasIA}" var="option">
+                                                    <option value="{!option.value}" text="{!option.label}"></option>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </div>
+                                        <div class="slds-size_1-of-2">
+                                            <lightning:select required="true" name="modelo" label="Modelo" value="{!v.auto.modelo}" onchange="{!c.handleChangeModelo}">
+                                                <option value="">-- SELECCIONAR --</option>
+                                                <aura:iteration items="{!v.modelosIA}" var="option">
+                                                    <option value="{!option.value}" text="{!option.label}"></option>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                                        <div class="slds-size_1-of-2">
+                                            <lightning:select name="anio" label="Anio" required="true" value="{!v.auto.anio}" onchange="{!c.handleChangeAnio}">
+                                                <option value="">-- SELECCIONAR --</option>
+                                                <aura:iteration items="{!v.aniosIA}" var="option">
+                                                    <option value="{!option}" text="{!option}"></option>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </div>
+                                        <aura:if isTrue="{!v.versionesIA}">
+                                            <div class="slds-size_1-of-2">
+                                                <lightning:select name="version" label="Version" required="true" value="{!v.auto.version}" onchange="{!c.handleChangeVersion}">
+                                                    <option value="">-- SELECCIONAR --</option>
+                                                    <aura:iteration items="{!v.versionesIA}" var="option">
+                                                        <option value="{!option.value}" text="{!option.label}"></option>
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </div>
+                                        </aura:if>
+                                    </div>
+
+                                    <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                                        <div class="slds-size_1-of-1">
+                                            <lightning:input type="number" label="Suma Asegurada" value="{!v.auto.sumaAsegurada}" required="true" />
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- TODO ESTE IF EN REALIDAD ES SI EL RAMO ES AUTOMOTOR -->
+                                    <aura:if isTrue="{!v.recordId}">
+                                        <!-- ENDOSO DATOS DEL AUTO -->
+                                        <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                                            <div class="slds-size_1-of-3">
+                                                <lightning:input type="text" label="Patente" name="patente" value="{!v.auto.patente}"/>
+                                            </div>
+                                            <div class="slds-size_1-of-3">
+                                                <lightning:input type="number" label="Nro Motor" name="nroMotor" value="{!v.auto.nroMotor}"/>
+                                            </div>
+                                            <div class="slds-size_1-of-3">
+                                                <lightning:input type="number" label="Nro Chasis" name="nroChasis" value="{!v.auto.nroChasis}"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- ENDOSO MEDIOS DE PAGO -->
+                                        
+                                    </aura:if>
+                                    
+                                </aura:set>
+                            </lightning:accordionSection>
+                            
+                            <lightning:accordionSection name="PRESTACIONES" label="Prestaciones">
+                                <aura:set attribute="body">
+                                    <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                                        <div class="slds-size_1-of-6">
+                                        	USO COMERCIAL
+                                        </div>
+                                        <div class="slds-size_1-of-6">
+                                        	<lightning:input type="toggle" messageToggleActive="" messageToggleInactive="" name="uso" value="{!v.auto.uso}" onchange="{!c.handleUso}"/>
+                                        </div>
+                                        <div class="slds-size_1-of-6">
+                                        	0KM
+                                        </div>
+                                        <div class="slds-size_1-of-6">
+                                        	<lightning:input type="toggle" messageToggleActive="" messageToggleInactive="" name="km" value="{!v.auto.km}" onchange="{!c.handleKM}"/>
+                                        </div>
+                                        <div class="slds-size_1-of-6">
+                                        	RASTREADOR
+                                        </div>
+                                        <div class="slds-size_1-of-6">
+                                        	<lightning:input type="toggle" messageToggleActive="" messageToggleInactive="" name="rastreador" value="{!v.auto.rastreador}" onchange="{!c.handleRastreador}"/>
+                                        </div>
+                                    </div>
+
+                                    <br/>
+                                    <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                                        <div class="slds-size_1-of-6">
+                                            GNC
+                                        </div>
+                                        <div class="slds-size_1-of-6">
+                                            <lightning:input type="toggle" messageToggleActive="" messageToggleInactive="" name="gnc" value="{!v.auto.gnc}" onchange="{!c.handleGNC}"/>
+                                        </div>
+                                        <div class="slds-size_1-of-6">
+                                        	ACCESORIO
+                                        </div>
+                                        <div class="slds-size_1-of-6">
+                                            <lightning:input type="toggle" messageToggleActive="" messageToggleInactive="" name="accesorios" value="{!v.auto.accesorio}" onchange="{!c.handleAccesorio}"/>
+                                        </div>
+                                        <div class="slds-size_1-of-6">
+                                            
+                                        </div>
+                                        <div class="slds-size_1-of-6"></div>
+                                    </div>
+                                    
+                                    <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                                        <div class="slds-size_1-of-3">
+                                            <aura:if isTrue="{!v.auto.gnc}">
+                                                <lightning:input type="number" name="sumaAseguradaGNC" label="Suma asegurada del equipo:" value="{!v.auto.sumaAseguradaGNC}"/>
+                                            </aura:if>
+                                        </div>
+                                        <div class="slds-size_1-of-3">
+                                            <aura:if isTrue="{!v.auto.accesorio}">
+                                                <lightning:select name="tipo" label="Tipo de Accesorio" value="{!v.auto.tipoAccesorio}" required="true">
+                                                    <aura:iteration items="{!v.optionsAccesorios}" var="option">
+                                                        <option value="{!option.value}" text="{!option.label}"></option>
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </aura:if>	
+                                        </div>
+                                        <div class="slds-size_1-of-3">
+                                        	<aura:if isTrue="{!v.auto.accesorio}">
+                                            	<lightning:input type="number" name="sumaAseguradaAccesorio" label="Suma asegurada del accesorio:" value="{!v.auto.sumaAseguradaAccesorio}"/>
+                                            </aura:if>
+                                        </div>
+                                    </div>   
+                                </aura:set>
+                            </lightning:accordionSection>
+                            
+                            <lightning:accordionSection name="AJUSTE" label="Ajuste y Cobertura">
+                                <aura:set attribute="body">
+                                    
+                                    <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                                        <div class="slds-size_1-of-2">
+                                            <lightning:checkboxGroup name="Tipo de Cobertura(s)"
+                                                                    label="Tipo de Cobertura(s) Sancor"
+                                                                    options="{! v.options }"
+                                                                    value="{! v.value }"
+                                                                    onchange="{! c.handleChange }"
+                                                                    required="true"/>
+                                        </div>
+                                        <br/>
+                                        <div class="slds-size_2-of-2">
+                                            <lightning:checkboxGroup name="Tipo de Cobertura(s)"
+                                                                    label="Tipo de Cobertura(s) San Cristóbal"
+                                                                    options="{! v.optionsCoberturasSC }"
+                                                                    value="{! v.valueCoberturasSC }"
+                                                                    onchange="{! c.handleChangeCoberturasSC }"
+                                                                    required="true"/>
+                                        </div>                                        
+                                    </div>
+                                    <br/>
+                                    <div class="slds-size_1-of-1">
+                                        <lightning:select name="ajuste" label="Ajuste automatico" value="{!v.auto.ajuste}">
+                                            <option value="0">-- SIN AJUSTE --</option>
+                                            <aura:iteration items="{!v.auto.ajustes}" var="ajuste">
+                                                <option value="{!ajuste}" text="{!ajuste}"></option>
+                                            </aura:iteration>
+                                        </lightning:select>
+                                    </div>
+                                    <div class="slds-size_1-of-1">
+                                        <lightning:select name="vigencia" label="Vigencia" value="{!v.auto.periodoDeValidez}">
+                                            <option value="" text="-- SELECCIONAR --"></option>
+                                            <aura:iteration items="{!v.optionsValidez}" var="option">
+                                                <option value="{!option.value}" text="{!option.label}"></option>
+                                            </aura:iteration>
+                                        </lightning:select>
+                                    </div>
+                                    <div class="slds-size_1-of-1">
+                                        <lightning:select name="frecuencia" label="Frecuencia de Pago" value="{!v.auto.frecuenciaPago}" required="true">
+                                            <option value="" text="-- SELECCIONAR --"></option>
+                                            <aura:iteration items="{!v.optionsFrecuencia}" var="option">
+                                                <option value="{!option.value}" text="{!option.label}"></option>
+                                            </aura:iteration>
+                                        </lightning:select>
+                                    </div>
+                                    <aura:if isTrue="{!v.auto.frecuenciaPago == '7'}">
+                                        <div class="slds-size_1-of-1">
+                                            <lightning:select name="cuotas" label="Cuotas" value="{!v.auto.cuota}" required="true">
+                                                <option value="" text="-- SELECCIONAR --"></option>
+                                                <aura:iteration items="{!v.cuotas}" var="cuota">
+                                                    <option value="{!cuota}" text="{!cuota}"></option>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </div>
+                                    </aura:if>
+                                </aura:set>
+                            </lightning:accordionSection>
+
+                            <!-- MEDIOS DE PAGO: ENDOSO -->
+                            <aura:if isTrue="{!v.recordId}">
+                                <lightning:accordionSection name="MEDIOSDEPAGO" label="Medios de Pago">
+                                    <aura:set attribute="body">
+                                        <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                                            <div class="slds-size_1-of-3">
+                                                <lightning:select name="medioDePago2" label="Medio de Pago" value="{!v.cotizacion.medioDePago}">
+                                                    <aura:iteration items="{!v.mediosDePago}" var="medioDePago">
+                                                        <option value="{!medioDePago}" text="{!medioDePago}"></option>
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </div>
+                                            <div class="slds-size_1-of-3">
+                                            	<lightning:input type="text" label="Nombre Completo" name="nombreMedioDePago" value="{!v.cotizacion.nombreMedioDePago}"/>
+                                            </div>
+                                            <div class="slds-size_1-of-3">
+                                            	<lightning:input type="number" label="Numero Medio de Pago" name="numeroMedioDePago" value="{!v.cotizacion.numeroMedioDePago}"/>
+                                            </div>
+                                        </div>
+                                    </aura:set>
+                                </lightning:accordionSection>
+                            </aura:if>
+                            
+                        </lightning:accordion>
+                        
+                        <!-- ACTIONS -->
+                        <aura:set attribute="footer">
+                            
+                            <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                                <div class="slds-size_1-of-4"></div>
+                                <div class="slds-size_1-of-4"></div>
+                                <div class="{! v.recordId ? 'slds-size_2-of-4' : 'slds-size_1-of-4' }">
+                                    <aura:if isTrue="{!and(v.auto.version,v.value)}">
+                                        <lightning:button class="slds-m-top_small" variant="brand" 
+                                                          onclick="{!c.doNext}" name="update" label="COTIZAR" />
+                                    </aura:if>
+                                </div>
+                                <aura:if isTrue="{! v.recordId == '' }">
+                                    <div class="slds-size_1-of-4">
+                                        <lightning:button class="slds-m-top_small" variant="brand" 
+                                                        onclick="{!c.doBefore}" name="update" label="ATRAS" />
+                                    </div>
+                                </aura:if>
+                            </div>
+                            
+                        </aura:set>
+                        
+                    </lightning:card>
+                    </div>
+            </div>
+            
+        </aura:set>
+        <lightning:spinner/>
+    </aura:if>
+    
+</aura:component>

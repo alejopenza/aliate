@@ -1,0 +1,168 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader,lightning:isUrlAddressable,lightning:actionOverride,force:appHostable"
+                access="global"
+                controller="EmitirPolizaController">
+                <!-- controller="CotizadorController" -->
+
+    <!-- ATTRIBUTES-->
+    <aura:attribute name="recordId" type="String" default="" />
+    <aura:attribute name="selectedItemId" type="String" default="" />
+    <aura:attribute name="medioDePago" type="String" default="" />
+    <aura:attribute name="mesVencimientoTarjeta" type="Integer" default="" />
+    <aura:attribute name="anioVencimientoTarjeta" type="Integer" default="" />
+    <aura:attribute name="origenDePago" type="String" default="" />
+    <aura:attribute name="isLoading" type="boolean" default="true" />
+    <aura:attribute name="isDebitoAutomatico" type="boolean" default="false" />
+    <aura:attribute name="isEfectivo" type="boolean" default="false" />
+    <aura:attribute name="isTarjetaDeCredito" type="boolean" default="false" />
+    <aura:attribute name="vida" type="boolean" />
+
+    <aura:attribute name="showEmitirButton" type="boolean" default="false"/>
+    <aura:attribute name="mediosDePago" type="List"
+        description="Los medios de pago habilitados para la emision"/>
+    <aura:attribute name="origenesDePago" type="List"
+        description="Los origines habilitados de tarjeta de credito"/>
+    <aura:attribute name="CBU" type="String" default=""/>
+    <aura:attribute name="numeroTarjetaDeCredito" type="String" default=""/>
+    <aura:attribute name="nombreTarjetaDeCredito" type="String" default=""
+        description="Nombre Completo del dueño de la tarjeta"/>
+    <aura:attribute name="mesesVencimientoTarjetaDeCredito" type="List" default="[ 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12 ]"
+        description="Mes de Vencimiento de la tarjeta"/>
+    <aura:attribute name="aniosVencimientoTarjetaDeCredito" type="List"
+        description="Año de Vencimiento de la tarjeta"/>
+
+    <aura:attribute name="items" type="List" />
+    <aura:attribute name="presupuestos" type="List" />
+
+    <!-- HANDLERS -->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+
+    <!-- EVENT -->
+
+    <!-- MARKUP -->
+    <aura:if isTrue="{!v.isLoading}">
+        <lightning:spinner />
+
+        <aura:set attribute="else">
+            <lightning:card title="Emitir Poliza">
+
+                <aura:set attribute="actions">
+
+                    <aura:if isTrue="{!v.showEmitirButton}">
+                        <lightning:button variant="destructive" label="Atras" title="Atras" onclick="{! c.handleAtras }"/>
+                        <lightning:button variant="success" label="Emitir" title="Emitir Poliza" onclick="{! c.handleEmitirPoliza }"/>
+
+                        <aura:set attribute="else">
+                            <lightning:button variant="brand" label="Siguiente" title="Siguiente" onclick="{! c.handleSiguiente }"/>
+                        </aura:set>
+                    </aura:if>
+
+                </aura:set>
+
+                <p class="slds-p-horizontal_small">
+                    <aura:if isTrue="{! !v.showEmitirButton}">
+
+                        <!-- Emision Cotizacion -->
+                        <lightning:select name="select1" label="Cotizacion Seleccionada" required="true" value="{!v.selectedItemId}">
+                            <option value="">-- SELECCIONAR ASEGURADORA --</option>
+                            <aura:iteration items="{!v.items}" var="item">
+                                <option value="{!item.Id}" text="{!item.Name}"></option>
+                            </aura:iteration>
+                        </lightning:select>
+                        <!-- /Emision Cotizacion -->
+
+                        <aura:set attribute="else">
+                            
+                            <!-- Vehicle Fields -->
+                            <aura:if isTrue="{! !v.vida}">
+                                <lightning:input 
+                                    aura:id="patente"
+                                    name="patente"
+                                    type="text"
+                                    label="Patente"
+                                    required="true"/>
+                                <lightning:input 
+                                    aura:id="nroMotor"
+                                    name="nroMotor"
+                                    label="Numero de Motor"
+                                    type="number"
+                                    required="true"/>
+                                <lightning:input 
+                                    aura:id="nroChasis"
+                                    name="nroChasis"
+                                    type="number"
+                                    label="Numero de Chasis"
+                                    required="true"/>
+                            </aura:if>
+                            <!-- /Vehicle Fields -->
+
+                            <!-- Payment Method Fields -->
+                            <lightning:select name="select2" label="Medio de Pago" required="true" value="{!v.medioDePago}" >
+                                <option value="">-- SELECCIONAR --</option>
+                                <aura:iteration items="{!v.mediosDePago}" var="medioDePago">
+                                    <option value="{!medioDePago}" text="{!medioDePago}"></option>
+                                </aura:iteration>
+                            </lightning:select>
+                            
+                            
+                            <aura:if isTrue="{! v.medioDePago=='DEBITO AUTOMATICO' }">
+                                <lightning:input aura:id="CBU"
+                                                name="CBU"
+                                                label="Número de CBU"
+                                                type="number" 
+                                                value="{!v.CBU}"
+                                                required="true"
+                                                pattern="[0-9]{22}"
+                                                messageWhenPatternMismatch="Deben ser 22 digitos."/>
+                            </aura:if>
+                            
+                            <aura:if isTrue="{! v.medioDePago=='TARJETA DE CREDITO'}">
+                                <lightning:input aura:id="nombreTarjetaDeCredito" 
+                                                name="nombreTarjetaDeCredito" 
+                                                label="Nombre Completo"
+                                                type="text"
+                                                value="{!v.nombreTarjetaDeCredito}" 
+                                                required="true"
+                                                pattern="^(?=.*$)[a-zA-Z]+(?: [^\W\d_]+)*$"
+                                                messageWhenPatternMismatch="Solo se permite letras sin acentos y espacios intermedios."/>
+                                <lightning:input aura:id="numeroTarjetaDeCredito"
+                                                name="numeroTarjetaDeCredito" 
+                                                label="Número de la Tarjeta de Credito"
+                                                type="number" 
+                                                value="{!v.numeroTarjetaDeCredito}" 
+                                                required="true"
+                                                pattern="[0-9]{16}"
+                                                messageWhenPatternMismatch="Deben ser 16 digitos."/>
+                                
+                                <div class="slds-grid">
+                                    <lightning:select aura:id="mesVencimientoTarjetaDeCredito"
+                                                    name="selectMes"
+                                                    label="Mes"
+                                                    value="{!v.mesVencimientoTarjeta}"
+                                                    required="true"
+                                                    class="slds-size_1-of-2 slds-p-right_xx-small">
+                                        <option value="">-- SELECCIONAR --</option>
+                                        <aura:iteration items="{!v.mesesVencimientoTarjetaDeCredito}" var="mes">
+                                            <option value="{!mes}" text="{!mes}"/>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                    <lightning:select aura:id="mesVencimientoTarjetaDeCredito"
+                                                    name="selectAnio" 
+                                                    label="Año" 
+                                                    value="{!v.anioVencimientoTarjeta}"
+                                                    required="true"
+                                                    class="slds-size_1-of-2 slds-p-left_xx-small">
+                                        <option value="">-- SELECCIONAR --</option>
+                                        <aura:iteration items="{!v.aniosVencimientoTarjetaDeCredito}" var="anio">
+                                            <option value="{!anio}" text="{!anio}"/>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </div>
+                            </aura:if>
+                            <!-- /Payment Method Fields -->
+                        </aura:set>
+                    </aura:if>
+                </p>
+            </lightning:card>
+        </aura:set>
+    </aura:if>
+</aura:component>
