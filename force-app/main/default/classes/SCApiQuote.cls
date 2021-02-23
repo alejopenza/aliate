@@ -12,7 +12,7 @@ public with sharing class SCApiQuote {
             HttpRequest req = new HttpRequest();
             req.setEndpoint(credencial.Url__c);
             req.setMethod('POST');
-            req.setTimeout(16000);
+            req.setTimeout(120000);
             req.setHeader('content-type','application/Json');
             req.setHeader('USERNAME', credencial.User__c);
             req.setHeader('PASS', credencial.Clave__c);
@@ -31,9 +31,11 @@ public with sharing class SCApiQuote {
 
             if(res.getStatusCode() == 200){
                 if(!res.getBody().contains('"HasError":true')){
+                    system.debug('entro al success');
                     //Success
                     result.response = SanCristobalCotizacionResponse.parse(res.getBody());
                 }else{
+                    system.debug('entro al error');
                     //Error
                     result.hasError = true;
                     result.errorResponse = SanCristobalCotizadorResAutoErro.parse(res.getBody());
@@ -81,6 +83,8 @@ public with sharing class SCApiQuote {
         
         SanCristobalCotizadorRequestAuto.PrimaryAddress pa = new SanCristobalCotizadorRequestAuto.PrimaryAddress();
         
+        system.debug('cliente: ' + cliente);
+
         ep.FirstName = cliente.nombre;
         ep.LastName = cliente.apellido;
 
@@ -107,30 +111,19 @@ public with sharing class SCApiQuote {
         //ahc.OfficialIDType = cliente.tipoDeDocumento;// 'Ext_DNI96';
         
         pa.PostalCode = cliente.Codigo_Postal;
-        pa.State = 'AR_23'; //cliente.estado; //'AR_19'; //cliente.estado
+        system.debug('cliente.codigo_provincia: ' + cliente.Codigo_Provincia);
+        pa.State = cliente.Codigo_Provincia; //'AR_19'; //cliente.estado; //'AR_19'; //cliente.estado
         ahc.Subtype = 'Person';
-        ahc.TaxID = cliente.Numero_de_Documento;
+        ahc.TaxID = '42539623';// cliente.Numero_de_Documento;
 
         SanCristobalCotizadorRequestAuto.EntityCompany ec = new SanCristobalCotizadorRequestAuto.EntityCompany();
-        /*if (acc.OriginationDateSpecified) {
-            ec.Ext_ActivityStartDate = acc.OriginationDate;
-            ec.Ext_ActivityStartDateSpecified = true;        
-        } else {
-            ec.Ext_ActivityStartDate = null;
-            ec.Ext_ActivityStartDateSpecified = false;
-        }*/
-        
-        //todo remover esto y descomentar lo de arriba con la logica
-        ec.Ext_ActivityStartDate = null;
-        ec.Ext_ActivityStartDateSpecified = false;
+        ec.Ext_ActivityStartDate = '2019-02-27T14:47:48.817Z';
+        ec.Ext_ActivityStartDateSpecified = true;
 		
         ahc.PrimaryAddress = pa;
         ahc.EntityCompany = ec;
 
         acc.AccountHolderContact = ahc;
-
-        //acc.OriginationDate = '2019-02-27T14:47:48.817Z';
-        //acc.OriginationDateSpecified = true;
 
         SanCristobalCotizadorRequestAuto.PrimaryAddress pl = new SanCristobalCotizadorRequestAuto.PrimaryAddress();
         pl.PostalCode = cliente.Codigo_Postal;
@@ -138,24 +131,30 @@ public with sharing class SCApiQuote {
 
         acc.PrimaryLocation = pl;
 
-        acc.ProducerCode = '0';
+        acc.ProducerCode = '03-005343';
 
         request.Account = acc;
 
-        request.StartDate = '2020-09-11T17:37:36.249Z';
+        request.StartDate = system.now().format('yyyy-MM-dd HH:mm:ss');
+        request.StartDate = request.StartDate.replace(' ', 'T');
+        request.StartDate = request.StartDate + '.249Z';
         request.PostalCodeRiskLocation = String.valueOf(cliente.Codigo_Postal);
 
+        request.PaymentFees = auto.frecuenciaPago; //6;
+        system.debug('auto.periodoDeValidez: ' + auto.periodoDeValidez);
         if (auto.periodoDeValidez == 3) {
             request.PolicyTermCode = String.valueOf(TermCode.Ext_Trimester);
         } else if (auto.periodoDeValidez == 6) {
             request.PolicyTermCode = String.valueOf(TermCode.HalfYear);
         } else if (auto.periodoDeValidez == 12) {
             request.PolicyTermCode = String.valueOf(TermCode.Annual);
+        }else{
+            request.PolicyTermCode = 'HalfYear';
+            request.PaymentFees = 6;
         }
 
-        request.PaymentFees = auto.frecuenciaPago; //6;
         request.CommercialAlternative = '0';
-        request.PaymentMethodCode = auto.medioDePago; //CHEQUEAR
+        request.PaymentMethodCode = 'responsive'; //auto.medioDePago; //CHEQUEAR
         request.CurrencyCode = 'ars';
 
         SanCristobalCotizadorRequestAuto.Vehiculos vehiculo = new SanCristobalCotizadorRequestAuto.Vehiculos();
@@ -170,9 +169,19 @@ public with sharing class SCApiQuote {
         }else{
             vehiculo.Usage = 'Personal';
         }
-        vehiculo.AutomaticAdjust = String.valueOf(auto.ajuste);
-        vehiculo.Category = auto.categoria;
-        vehiculo.AccesoryAmount = Integer.valueOf(auto.sumaAseguradaAccesorio);
+
+        if(auto.ajuste != null){
+            vehiculo.AutomaticAdjust = String.valueOf(auto.ajuste);
+        }else{
+            vehiculo.AutomaticAdjust = '0';
+        }
+        vehiculo.Category = 'Car';
+        
+        if(auto.sumaAseguradaAccesorio != null){
+            vehiculo.AccesoryAmount = Integer.valueOf(auto.sumaAseguradaAccesorio);
+        }else{
+            vehiculo.AccesoryAmount = 0;
+        }
 
         request.Vehiculos.add(vehiculo);
        
@@ -189,7 +198,7 @@ public with sharing class SCApiQuote {
 
     public String setMockBody(){
 
-        String JSONContent = '{"Account": {"AccountNumber": null,"AccountHolderContact": {"EntityPerson": {"FirstName":"Guillermo", "Gender":"M","LastName":"Arias","DateOfBirth": "1987-01-04T14:47:48.817Z","DateOfBirthSpecified": true},"OfficialIDType": "Ext_DNI96","PrimaryAddress": {"PostalCode": 2000,"State": "AR_19"},"Subtype": "Person","TaxID": "42539623","EntityCompany": {"Ext_ActivityStartDate": "2019-02-27T14:47:48.817Z","Ext_ActivityStartDateSpecified": true}},"OriginationDate": "2019-02-27T14:47:48.817Z","OriginationDateSpecified": true,"PrimaryLocation": {"PostalCode": 2000,"State": "AR_19"},"ProducerCode": "05-007440"},"StartDate": "2020-09-11T17:37:36.249Z","PostalCodeRiskLocation": "2000","PolicyTermCode": "HalfYear","PaymentFees": 6,"CommercialAlternative": "0","PaymentMethodCode": "responsive","CurrencyCode": "ars","Vehiculos": [{"CodigoInfoAuto": "120506","Year": 2018,"Is0Km":false,"HasGPS": false,"CUITAcreedorPrendario": "30-68588847-1","StatedAmount": 1090000,"Usage": "Personal","AutomaticAdjust": "20","Category": "Car","AccesoryAmount": 0}],"Versiones": [{"CA7Product": "CA7_C"}]}';
+        String JSONContent = '{"Account": {"AccountNumber": null,"AccountHolderContact": {"EntityPerson": {"FirstName":"Guillermo", "Gender":"M","LastName":"Arias","DateOfBirth": "1987-01-04T14:47:48.817Z","DateOfBirthSpecified": true},"OfficialIDType": "Ext_DNI96","PrimaryAddress": {"PostalCode": 2000,"State": "AR_19"},"Subtype": "Person","TaxID": "42539623","EntityCompany": {"Ext_ActivityStartDate": "2019-02-27T14:47:48.817Z","Ext_ActivityStartDateSpecified": true}},"OriginationDate": "2019-02-27T14:47:48.817Z","OriginationDateSpecified": true,"PrimaryLocation": {"PostalCode": 2000,"State": "AR_19"},"ProducerCode": "03-005343"},"StartDate": "2020-09-11T17:37:36.249Z","PostalCodeRiskLocation": "2000","PolicyTermCode": "HalfYear","PaymentFees": 6,"CommercialAlternative": "0","PaymentMethodCode": "responsive","CurrencyCode": "ars","Vehiculos": [{"CodigoInfoAuto": "120506","Year": 2018,"Is0Km":false,"HasGPS": false,"CUITAcreedorPrendario": "30-68588847-1","StatedAmount": 1090000,"Usage": "Personal","AutomaticAdjust": "20","Category": "Car","AccesoryAmount": 0}],"Versiones": [{"CA7Product": "CA7_C"}]}';
         JSONParser parser = JSON.createParser(JSONContent);
         SCResponse request = new SCResponse(parser);
 

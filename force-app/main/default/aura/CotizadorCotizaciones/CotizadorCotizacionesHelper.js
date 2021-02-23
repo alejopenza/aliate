@@ -114,7 +114,7 @@
                         data.push(wrapper.cotizacionesSanCristobal[i]);
                     }
                     component.set('v.data', data);
-                    
+                    console.log('termino!');
                 }
             }else if(state === 'ERROR'){
                 var toastEvent = $A.get("e.force:showToast");
@@ -126,10 +126,68 @@
                 toastEvent.fire();
             }
 
-            //todo aqui iria el metodo al siguiente callback para la siguiente integracion
-            //this.doAnotherCompanyCallout(component, event, helper);
+            this.cotizacionRioUruguay(component, event, helper, oppId);
         });
         $A.enqueueAction(action);
     },
-    
+    cotizacionRioUruguay: function (component, event, helper, oppId) {
+        var action = component.get("c.doRioUruguayCallout");
+
+        action.setParams(
+            {
+                'auto': JSON.stringify(component.get('v.auto')),
+                'cliente': JSON.stringify(component.get('v.cliente'))
+            }
+        );
+
+        component.set('v.isLoading', true);
+        component.set('v.rioUruguayCallout', true);
+
+        action.setCallback(
+            this,
+            function (response) {
+                component.set('v.isLoading', false);
+                component.set('v.rioUruguayCallout', false);
+
+                let errorTitle = "Error al cotizar con RIO URUGAY SEGUROS!";
+                let result = response.getReturnValue();
+                let state = response.getState();
+
+                if (state === "SUCCESS") {
+
+                    if (result.hasError) {
+                        this.launchToast(errorTitle, result.errors[0]);
+                    } else {
+                        var wrapper = response.getReturnValue();
+                        var data = component.get('v.data');
+
+                        console.log('cotizaciones: ', wrapper.cotizacionesRUS);
+                        for (var i = 0; i < wrapper.cotizacionesRUS.length; i++) {
+                            data.push(wrapper.cotizacionesRUS[i]);
+                        }
+                        component.set('v.data', data);
+                    }
+
+                } else if (state === 'ERROR') {
+                    this.launchToast ( errorTitle, result.errors[0] );
+                }
+
+                //todo aqui iria el metodo al siguiente callback para la siguiente integracion
+                //this.doAnotherCompanyCallout(component, event, helper);
+            }
+        );
+        $A.enqueueAction(action);
+
+    },
+    launchToast: function (title, errorMessage, errorType) {
+        var type = errorType ? errorType : "error";
+
+        var toastEvent = $A.get("e.force:showToast");
+        toastEvent.setParams({
+            "title": title,
+            "message": errorMessage,
+            "type": type
+        });
+        toastEvent.fire();
+    }
 })

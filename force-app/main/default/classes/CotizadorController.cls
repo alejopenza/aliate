@@ -29,6 +29,51 @@ public without sharing class CotizadorController {
         return result;
     }
 
+    //GET CODIGO PROVINCIA
+    @AuraEnabled
+    public static Wrapper doGetCodigoDeProvincia1(Cliente cliente){
+        system.debug('doGetCodigoDeProvincia1(): ' + cliente);
+        Wrapper result = new Wrapper();
+        
+        try{
+            Credencial__mdt credencial = [
+                SELECT Id, Clave__c, Url__c, User__c
+                FROM Credencial__mdt
+                WHERE Label = 'CiudadesPorCodigoPostal'
+            ];
+
+            HttpRequest req = new HttpRequest();
+            req.setEndpoint(credencial.Url__c + cliente.codigo_postal);
+            req.setMethod('GET');
+            req.setTimeout(16000);
+            req.setHeader('content-type','application/Json');
+            req.setHeader('USERNAME', credencial.User__c);
+            req.setHeader('PASS', credencial.Clave__c);
+
+            Http h = new Http();
+            system.debug('Request: ' + req.getEndpoint());
+            HttpResponse res = h.send(req);
+            system.debug('Response: ' + res.getBody());
+            
+            if(res.getStatusCode() == 200){
+                CiudadesPorCodigoPostalResponse response = CiudadesPorCodigoPostalResponse.parse(res.getBody());
+                cliente.Codigo_Provincia = response.ciudadDTO[0].Estado;
+                result.cliente = cliente;
+                system.debug(result.cliente.Codigo_Provincia);
+            }
+
+        }catch(Exception e){
+            system.debug(e.getMessage() + ' ' + e.getStackTraceString());
+            
+            result.hasError = true;
+            result.errors.add(e.getMessage() + ' ' + e.getStackTraceString());
+            
+            ErrorHelper.LogError(e);
+        }
+        
+        return result;
+    }
+
     @AuraEnabled
     public static Wrapper doSave1(String cliente, String auto, String cotizaciones){
         system.debug('doSave1(): ' + cliente + ' ' + auto + ' ' + cotizaciones);
@@ -96,9 +141,39 @@ public without sharing class CotizadorController {
             //cotizacion.Pricebook2Id = pbes[0].PriceBook2Id;
             database.insert(cotizacion);
 
+            //TODO HAY QUE HACER UN REFACTOR PARA QUE NO HAYA UN COTIZACION{COMPANIADESEGUROS}
+            //SINO QUE SOLO SEA UNA CLASE COTIZACION Y CHAU, MAPEAMOS TODAS AHI LOS CAMPOS Q TENEMOS
+            //AHORA ESTOY USANDO SIEMPRE COTIZACIONSANCOR XQ FUE LA PRIMERA QUE USE, Y EN BASE
+            //A LA ASEGURADORA LO PASO A UN METODO SAVE EN CADA CONTROLADOR
+            //PARA QUE CADA UNO DEFINA EL NOMBRE AL QUOTE COMO DEBE Y USE EL PRODUCTO QUE DEBE
+            //Y MEJOR QUE ESTE SEPARADO PERO HECHO ESTE FIX ANTERIORMENTE DICHO
+            //VA A HABER QUE MODIFICAR A LA HORA DE DESEREALIZAR LAS RESPUESTAS DE LOS SERVICIOS
+            //QUE MAPEE LA INFO EN REGISTROS DE UNA LISTA DE COTIZACIONES GENERAL
+            //Y QUE ESTA CLASE ENTONCES USE ESA CLASE COTIZACION GENERICA Y NO X SEPARADO
+            //PODRIAMOS TB CONSERVAR LOS LISTADOS DE COTIZACIONES SEPARADAS PERO HACIENDO USO
+            //DE LA HERENCIA PARA HACER UN EXTENDS DEL GENERICO YA QUE CADA COTIZACION DE CADA COMPANIA
+            //ES A SU VEZ UNA COTIZACION EN SI, POR ENDE DATOS BASE EN LA CLASE PADRE
+            //Y EN CASO DE NECESITARLO (NO X AHORA) HABRIA CAMPOS PROPIOS PARA CADA COTIZACION
+            //DE CADA COMPANIA
+
+            List<CotizacionSancor> cotizacionesSancorAGuardar = new List<CotizacionSancor>();
+            List<CotizacionSancor> cotizacionesSanCristobalAGuardar = new List<CotizacionSancor>();
+
+            //TODO DEBERIA SER List<CotizacionGenerica> cotizacionesAGuardar = (List<CotizacionGenerica>) JSON.deserialize(cotizaciones, List<CotizacionGenerica>.class);
+            List<CotizacionSancor> cotizacionesAGuardar = (List<CotizacionSancor>) JSON.deserialize(cotizaciones, List<CotizacionSancor>.class);
+            for(CotizacionSancor cotizacionAGuardar : cotizacionesAGuardar){
+                if(cotizacionAGuardar.aseguradora == 'SANCOR'){
+                    cotizacionesSancorAGuardar.add(cotizacionAGuardar);
+                }else if(cotizacionAGuardar.aseguradora == 'SAN CRISTOBAL'){
+                    cotizacionesSanCristobalAGuardar.add(cotizacionAGuardar);
+                }
+            }
+
             //SANCOR
-            List<CotizacionSancor> cotizacionesSancor = (List<CotizacionSancor>) JSON.deserialize(cotizaciones, List<CotizacionSancor>.class);
-            result = SancorCotizador.doSave(result, car, cotizacionesSancor, cotizacion);
+            result = SancorCotizador.doSave(result, car, cotizacionesSancorAGuardar, cotizacion);
+
+            //SAN CRISTOBAL
+            result = SanCristobalCotizador.doSave(result, car, cotizacionesSanCristobalAGuardar, cotizacion);
 
         }catch(Exception e){
             Database.rollback(sp);
@@ -176,6 +251,7 @@ public without sharing class CotizadorController {
             this.hasError = false;
             this.errors = new List<String>();
             this.cotizacionesSancor = new List<CotizacionSancor>();
+            this.cotizacionesRUS = new List<CotizacionRUS>();
             //this.cotizaciones_vida = new List<Cotizacion>();
             this.modulosCoberturas = new List<Modulo_Cobertura__mdt>();
             this.modulosCoberturasSC = new List<AllValidProductOffering__c>();
@@ -186,6 +262,7 @@ public without sharing class CotizadorController {
             this.versionesIA = new Map<Integer, String>();
             this.nomina = new List<NominaItem>();
             this.cliente = new cliente();
+            this.cotizacionesSanCristobal = new List<CotizacionSanCristobal>();
         }
         
         @AuraEnabled
@@ -208,6 +285,9 @@ public without sharing class CotizadorController {
         
         @AuraEnabled
         public List<CotizacionSancor> cotizacionesSancor {get;set;}
+
+        @AuraEnabled
+        public List<CotizacionRus> cotizacionesRus {get;set;}
 
         @AuraEnabled
         public List<CotizacionSanCristobal> cotizacionesSanCristobal {get;set;}
@@ -253,7 +333,7 @@ public without sharing class CotizadorController {
         public String aseguradora {get;set;}
 
         @AuraEnabled
-        public String descripcion {get;set;}
+        public String descripcionCorta {get;set;}
 
         @AuraEnabled
         public Decimal ivaMensual {get;set;}
@@ -318,12 +398,87 @@ public without sharing class CotizadorController {
 
     }
     
+    public class CotizacionRUS{
+
+        @AuraEnabled
+        public String aseguradora {get;set;}
+        @AuraEnabled
+        public String descripcionCorta {get;set;}
+        @AuraEnabled
+        public Decimal ivaMensual {get;set;}
+        @AuraEnabled
+        public Decimal ivaTotal {get;set;}
+        @AuraEnabled
+        public Decimal premioMensual {get;set;}
+        @AuraEnabled
+        public Decimal premioTotal {get;set;}
+        @AuraEnabled
+        public String ajusteAutomatico {get;set;}
+        @AuraEnabled
+        public List<String> ajustesAutomaticosPosibles {get;set;}
+        @AuraEnabled
+		public String auxilioMecanico {get;set;}
+        @AuraEnabled
+		public String coberturaVida {get;set;}
+        @AuraEnabled
+		public String codigoCasco {get;set;}
+        @AuraEnabled
+        public String codigoRC {get;set;}
+        @AuraEnabled
+		public String descripcionCasco {get;set;}
+        @AuraEnabled
+		public String descripcionComercial {get;set;}
+        @AuraEnabled
+		public String descripcionRC {get;set;}
+        @AuraEnabled
+		public String detalleCoberturaCasco {get;set;}
+        @AuraEnabled
+		public String detalleCoberturaRC {get;set;}
+        @AuraEnabled
+		public Integer franquicia {get;set;}
+        @AuraEnabled
+		public String numeroSolicitud {get;set;}
+        @AuraEnabled
+		public String paisesLimitrofes {get;set;}
+        @AuraEnabled
+		public Integer prima {get;set;}
+        @AuraEnabled
+		public String responsabilidadCivil {get;set;}
+        @AuraEnabled
+		public Integer sumaAsegurada {get;set;}
+
+
+        public CotizacionRUS(){
+            // this.sumasAseguradas = new List<CotizacionRUSSumaAsegurada>();
+        }
+    }
+
+    // public class CotizacionRUSSumaAsegurada{
+    //     public CotizacionRUSSumaAsegurada(){}
+
+    //     @AuraEnabled
+    //     public Decimal capital {get;set;}
+
+    //     @AuraEnabled
+    //     public String descripcion {get;set;}
+
+    //     @AuraEnabled
+    //     public String detalleTipo {get;set;}
+
+    //     @AuraEnabled
+    //     public Decimal primaPuraMensual {get;set;}
+
+    //     @AuraEnabled
+    //     public Decimal primaPuraTotal {get;set;}
+
+    // }
+
     public class Cliente{
         
         public Cliente(){
             
         }
-        
+
         @AuraEnabled
         public String nombre {get;set;}
         
@@ -338,6 +493,9 @@ public without sharing class CotizadorController {
         
         @AuraEnabled
         public Integer Codigo_Postal {get;set;}
+
+        @AuraEnabled
+        public String Codigo_Provincia {get;set;}
         
         @AuraEnabled
         public boolean es_empleador {get;set;}

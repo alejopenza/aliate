@@ -112,8 +112,13 @@ public with sharing class PEYPEDatosAPIFinal {
             system.debug('Response: ' + res.getBody());
             
             if(res.getStatusCode() == 200){
-                result.cliente = PEYPEDatosAPIFinalResponse.parse(res.getBody());
-                system.debug('result.cliente: ' + result.cliente);
+                if(res.getBody().contains('descripcion_error')){
+                    PEYPEErrorResponse errorResponse = PEYPEErrorResponse.parse(res.getBody());
+                    result.errors.add(errorResponse.RESULTADO.ERROR.descripcion_error);
+                }else{
+                    result.cliente = PEYPEDatosAPIFinalResponse.parse(res.getBody());
+                    system.debug('result.cliente: ' + result.cliente);
+                }
             }else if(res.getStatusCode() == 404){
                 result.hasError = true;
                 result.errors.add('Servicio no disponible. Intente mas tarde.');
@@ -147,8 +152,13 @@ public with sharing class PEYPEDatosAPIFinal {
             system.debug('Result: ' + res.getBody());
             
             if(res.getStatusCode() == 200){
-                result.clienteCUIT = PEYPEDatosAPIFinalResponseCUIT.parse(res.getBody());
-                system.debug('result.cliente: ' + result.clienteCUIT);
+                if(res.getBody().contains('descripcion_error')){
+                    result.hasError = true;
+                    result.errors.add('No se ha encontrado informacion, por favor intente con otros datos.');
+                }else{
+                    result.clienteCUIT = PEYPEDatosAPIFinalResponseCUIT.parse(res.getBody());
+                    system.debug('result.cliente: ' + result.clienteCUIT);
+                }
             }else if(res.getStatusCode() == 404){
                 result.hasError = true;
                 result.errors.add('Servicio no disponible. Intente mas tarde.');

@@ -282,7 +282,7 @@ public with sharing class SancorCotizador {
 
                 //QUOTE
                 Quote quote = new Quote();
-                quote.Name = 'test';
+                quote.Name = 'SANCOR';
                 quote.OpportunityId = opp.Id;
                 quote.Status = 'Presented';
                 quote.RecordTypeId = recordTypeAutomotorId;
