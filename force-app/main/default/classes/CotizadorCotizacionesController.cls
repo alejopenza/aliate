@@ -68,6 +68,28 @@ public with sharing class CotizadorCotizacionesController {
         return result;
     }
 
+    @AuraEnabled
+    public static CotizadorController.Wrapper doRioUruguayCallout(String auto, String cliente, Id oppId){
+        system.debug('doRioUruguayCallout()');
+
+        CotizadorController.Wrapper result = new CotizadorController.Wrapper();
+        try{
+            CotizadorController.Auto autoFromParam = (CotizadorController.Auto) JSON.deserialize(auto, CotizadorController.Auto.class);
+            CotizadorController.Cliente clienteFromParam = (CotizadorController.Cliente) JSON.deserialize(cliente, CotizadorController.Cliente.class);
+
+            result = RUSCotizador.doQuoteCallout(result, autoFromParam, clienteFromParam);
+        }catch(Exception e){
+            system.debug(e.getMessage() + ' ' + e.getStackTraceString());
+            
+            result.hasError = true;
+            result.errors.add(e.getMessage() + ' ' + e.getStackTraceString());
+            
+            ErrorHelper.LogError(e);
+        }
+        
+        return result;
+    }
+
     /*
     @AuraEnabled
     public static CotizadorController.Wrapper doInitCotizaciones(String auto, String cliente, Id oppId){

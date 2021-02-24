@@ -1,15 +1,80 @@
 public with sharing class SanCristobalCotizador {
-    public SanCristobalCotizador() {
 
+    public static CotizadorController.Wrapper doSanCristobalCallout(CotizadorController.Wrapper result, 
+                                                                    CotizadorController.Auto auto, 
+                                                                    CotizadorController.Cliente cliente){
+        system.debug('doSanCristobalCallout()');
+
+        SCApiQuote api = new SCApiQuote();
+        SCApiQuote.Wrapper response = api.getDataFromAPI(auto, cliente);
+        system.debug('response: ' + response);
+
+        if(!response.hasError){
+
+            Integer i=0;
+            Map<String, String> coberturasSC = new Map<String, String>();
+            for(AllValidProductOffering__c avp : [
+                SELECT ID, Code__c, Description__c
+                FROM AllValidProductOffering__c
+            ]){
+                coberturasSC.put(avp.Code__c, avp.Description__c);
+            }
+
+            for(SanCristobalCotizacionResponse.Summaries summary : response.response.Summaries){
+                //CotizadorController.CotizacionSanCristobal cotizacion = new CotizadorController.CotizacionSanCristobal();
+                CotizadorController.CotizacionSancor cotizacion = new CotizadorController.CotizacionSancor();
+                cotizacion.aseguradora = 'SAN CRISTOBAL';
+                
+                cotizacion.descripcionCorta = coberturasSC.get(auto.codigosDeModuloDeCoberturasSC[i]);
+                
+                cotizacion.ivaMensual = summary.Summary.Taxes.Amount;
+                cotizacion.ivaTotal = summary.Summary.Taxes.Amount;
+                
+                cotizacion.premioMensual = summary.Summary.NetPremium.Amount;
+                cotizacion.premioTotal = summary.Summary.NetPremium.Amount;
+
+                cotizacion.policyPeriodId = summary.Summary.PolicyPeriodId;
+                cotizacion.BranchNumber = summary.Summary.BranchNumber;
+                if(!summary.UWIssues.isEmpty()){
+                    if(summary.UWIssues[0] != null){
+                        if(summary.UWIssues[0].BlockingPoint != null){
+                            cotizacion.blockingPoint = summary.UWIssues[0].BlockingPoint.Code;
+                        }
+                    }
+                }
+
+                result.cotizacionesSanCristobal.add(cotizacion);
+                i++;
+            }
+        }else{
+            result.hasError = true;
+            if(response.errorResponse != null){
+                for(SanCristobalCotizadorResAutoErro.Messages errorMsg : response.errorResponse.Messages){
+                    result.errors.add(errorMsg.Description);
+                }
+            }else{
+                result.errors.add('Time Out!');
+            }
+        }
+
+        return result;
     }
 
-    
     public static CotizadorController.Wrapper doSave(CotizadorController.Wrapper result, 
                                                     CotizadorController.Auto auto, 
                                                     List<CotizadorController.CotizacionSancor> cotizaciones, 
                                                     Opportunity opp){
-        
+        system.debug('doSave(): ' + result + ' ' + auto + ' ' + cotizaciones + ' ' + opp);
+
+        result = doSaveInSFDC(result, cotizaciones, auto, opp);
+
+        return result;
+    }
+
+    public static CotizadorController.Wrapper doSaveInSFDC(CotizadorController.Wrapper result, List<CotizadorController.CotizacionSancor> cotizaciones, CotizadorController.Auto auto, Opportunity opp){
         try{
+
+            opp.policyPeriodId__c = cotizaciones[0].policyPeriodId;
 
             Id recordTypeAutomotorId = [
                 SELECT ID
@@ -85,49 +150,4 @@ public with sharing class SanCristobalCotizador {
         return result;
     }
 
-    public static CotizadorController.Wrapper doSanCristobalCallout(CotizadorController.Wrapper result, CotizadorController.Auto auto, CotizadorController.Cliente cliente){
-        system.debug('doSanCristobalCallout()');
-
-        SCApiQuote api = new SCApiQuote();
-        SCApiQuote.Wrapper response = api.getDataFromAPI(auto, cliente);
-        system.debug('response: ' + response);
-
-        if(!response.hasError){
-            Integer i=0;
-            Map<String, String> coberturasSC = new Map<String, String>();
-            for(AllValidProductOffering__c avp : [
-                SELECT ID, Code__c, Description__c
-                FROM AllValidProductOffering__c
-            ]){
-                coberturasSC.put(avp.Code__c, avp.Description__c);
-            }
-            system.debug('coberturasSC: ' + coberturasSC);
-            for(SanCristobalCotizacionResponse.Summaries summary : response.response.Summaries){
-                CotizadorController.CotizacionSanCristobal cotizacion = new CotizadorController.CotizacionSanCristobal();
-                cotizacion.aseguradora = 'SAN CRISTOBAL';
-                
-                cotizacion.descripcionCorta = coberturasSC.get(auto.codigosDeModuloDeCoberturasSC[i]);
-                
-                cotizacion.ivaMensual = summary.Summary.Taxes.Amount;
-                cotizacion.ivaTotal = summary.Summary.Taxes.Amount;
-                
-                cotizacion.premioMensual = summary.Summary.NetPremium.Amount;
-                cotizacion.premioTotal = summary.Summary.NetPremium.Amount;
-
-                result.cotizacionesSanCristobal.add(cotizacion);
-                i++;
-            }
-        }else{
-            result.hasError = true;
-            if(response.errorResponse != null){
-                for(SanCristobalCotizadorResAutoErro.Messages errorMsg : response.errorResponse.Messages){
-                    result.errors.add(errorMsg.Description);
-                }
-            }else{
-                result.errors.add('Time Out!');
-            }
-        }
-
-        return result;
-    }
 }

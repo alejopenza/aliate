@@ -262,7 +262,8 @@ public without sharing class CotizadorController {
             this.versionesIA = new Map<Integer, String>();
             this.nomina = new List<NominaItem>();
             this.cliente = new cliente();
-            this.cotizacionesSanCristobal = new List<CotizacionSanCristobal>();
+            //this.cotizacionesSanCristobal = new List<CotizacionSanCristobal>();
+            this.cotizacionesSanCristobal = new List<CotizacionSancor>();
         }
         
         @AuraEnabled
@@ -289,8 +290,11 @@ public without sharing class CotizadorController {
         @AuraEnabled
         public List<CotizacionRus> cotizacionesRus {get;set;}
 
+        /*@AuraEnabled
+        public List<CotizacionSanCristobal> cotizacionesSanCristobal {get;set;}*/
+
         @AuraEnabled
-        public List<CotizacionSanCristobal> cotizacionesSanCristobal {get;set;}
+        public List<CotizacionSancor> cotizacionesSanCristobal {get;set;}
         
         @AuraEnabled
         public Id returnId {get;set;}
@@ -330,6 +334,15 @@ public without sharing class CotizadorController {
         }
 
         @AuraEnabled
+        public String blockingPoint {get;set;}
+
+        @AuraEnabled
+        public Integer BranchNumber {get;set;}
+
+        @AuraEnabled
+        public String policyPeriodId {get;set;}
+
+        @AuraEnabled
         public String aseguradora {get;set;}
 
         @AuraEnabled
@@ -354,6 +367,15 @@ public without sharing class CotizadorController {
         public CotizacionSancor(){
             this.sumasAseguradas = new List<CotizacionSancorSumaAsegurada>();
         }
+
+        @AuraEnabled
+        public String blockingPoint {get;set;}
+
+        @AuraEnabled
+        public Integer BranchNumber {get;set;}
+
+        @AuraEnabled
+        public String policyPeriodId {get;set;}
 
         @AuraEnabled
         public String aseguradora {get;set;}

@@ -127,7 +127,7 @@ public with sharing class SCApiQuote {
 
         SanCristobalCotizadorRequestAuto.PrimaryAddress pl = new SanCristobalCotizadorRequestAuto.PrimaryAddress();
         pl.PostalCode = cliente.Codigo_Postal;
-        pl.State = cliente.estado; //'AR_19';
+        pl.State = cliente.Codigo_Provincia; //'AR_19';
 
         acc.PrimaryLocation = pl;
 

@@ -39,26 +39,29 @@ public without sharing class EmitirPolizaController {
 
     /** Emite una poliza  */
     @AuraEnabled
-    public static CotizadorController.Wrapper emitirPoliza(
-            Id recordId,
-            List<Quote> presupuestos,
-            String medioDePago,
-            String origenDePago,
-            String numeroTarjetaCredito,
-            String nombreTarjetaCredito ,
-            String CBU,
-            Integer nroMotor,
-            Integer nroChasis,
-            Integer mesVencimientoTarjetaCredito,
-            Integer anioVencimientoTarjetaCredito,
-        	String patente
-        ){
-
-        system.debug('emitirPoliza: ' + recordId + ' ' + presupuestos);
-        CotizadorController.Wrapper result = new CotizadorController.Wrapper();
+    public static Wrapper emitirPoliza(Id recordId){
+        system.debug('emitirPoliza: ' + recordId);
         
-        Savepoint sp = Database.setSavepoint();
+        Wrapper result = new Wrapper();
 
+        try{
+            Opportunity opp = [
+                SELECT ID, policyPeriodId__c
+                FROM Opportunity
+                WHERE Id = :recordId
+            ];
+
+            //Emitir San Cristobal
+            result = SCEmision.emitir(opp);
+
+        }catch(Exception e){
+            system.debug(e.getMessage() + ' ' + e.getStackTraceString());
+            result.hasError = true;
+            result.errors.add(e.getMessage() + ' ' + e.getStackTraceString());
+        }
+        
+        /*
+        Savepoint sp = Database.setSavepoint();
         //DEMO
         try{
             
@@ -251,7 +254,30 @@ public without sharing class EmitirPolizaController {
             
             ErrorHelper.LogError(e);
         }
-        
+        */
+
         return result;
     }
+
+    //Wrapper
+    public class Wrapper{
+        public Wrapper(){
+            this.hasError = false;
+            this.errors = new List<String>();
+        }
+        
+        @AuraEnabled
+        public boolean hasError;
+
+        @AuraEnabled
+        public List<String> errors;
+
+        @AuraEnabled
+        public String PolicyPeriodId {get;set;}
+
+        @AuraEnabled
+        public String JobNumber {get;set;}
+
+    }
+    
 }

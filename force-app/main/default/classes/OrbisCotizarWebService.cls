@@ -5,17 +5,17 @@ public inherited sharing class OrbisCotizarWebService {
         this.serviceResponse = new Response();
     }
 
-    public Boolean cotizar (CotizadorAPIRequest cotizacion, Map<String, String> autenticacion) {
+    public Boolean cotizar (CotizadorController.Auto auto, CotizadorController.Cliente cliente, Map<String, String> autenticacion) {
         this.serviceResponse.hasError = false;
-
+        /*
         if ( ! this.isAuthenticated(autenticacion) ) {
             return ! this.serviceResponse.hasError;
         }
-
+        */
         String body = '';
 
         try {
-            body = this.createBody(cotizacion);
+            body = this.createBody(auto, cliente);
         } catch (Exception ex) {
             System.debug(ex.getStackTraceString());
             this.serviceResponse.hasError = true;
@@ -24,15 +24,16 @@ public inherited sharing class OrbisCotizarWebService {
 
         if ( ! this.serviceResponse.hasError ) {
             WSParameter bodyParameter = new WSParameter('body', body , true, false);
+            
             WSParameter[] headers = new List<WSParameter> {
-                new WSParameter('Authorization', (autenticacion.get('TokenType')+' '+autenticacion.get('Token')), false, false),
+                //new WSParameter('Authorization', (autenticacion.get('TokenType')+' '+autenticacion.get('Token')), false, false),
                 new WSParameter('Content-Type', 'text/xml', false, false),
                 new WSParameter('Content-Length', String.valueOf(body.length()), false, false)
             };
-
+            
             String endpoint = EndpointResolver.getEndpoint('Orbis_Cotizar', 'Orbis_Cotizar').Url__c;
 
-            RestWS webServiceCaller = new RestWS(endpoint, 'POST' , null, bodyParameter, headers);
+            RestWS webServiceCaller = new RestWS(endpoint, 'POST' , null, bodyParameter);
 
             this.serviceResponse = (Response) webServiceCaller.invoke(this.serviceResponse);
         }
@@ -53,8 +54,37 @@ public inherited sharing class OrbisCotizarWebService {
         return isAthenticated;
     }
 
-    private String createBody (CotizadorAPIRequest cotizacion) {
-        //TODO falta obtener los valores reales que deberán pasarse en el body para cotizar
+    private String createBody (CotizadorController.Auto auto, CotizadorController.Cliente cliente) {
+
+        String tipoCliente = ((cliente.tipoDeDocumento == 'DNI') ? 'F' : 'J');
+        String is0km = (auto.km) ? 'S' : 'N';
+        String grupoUso = (auto.uso ? 'COM' : 'PAR');
+
+        String dia = String.valueOf(System.today().day());
+        if (Integer.valueOf(dia) < 10) {
+            dia = '0' + dia;
+        }
+        String mes = String.valueOf(System.today().month());
+        if (Integer.valueOf(mes) < 10) {
+            mes = '0' + mes;
+        }        
+        String anio = String.valueOf(System.today().year());
+
+        String fecha = dia + mes + anio;
+
+        System.debug('Fecha: ' + fecha);
+
+        String vigencia = '';
+        if (auto.periodoDeValidez == 3) {
+            vigencia = 'T';
+        } else if (auto.periodoDeValidez == 4) {
+            vigencia = 'Q';
+        } else if (auto.periodoDeValidez == 6) {
+            vigencia = 'S'; //por el momento, no cotiza con este periodo
+        } else if (auto.periodoDeValidez == 12) {
+            vigencia = 'A'; //por el momento, no cotiza con este periodo
+        }
+
         String body = 
         '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">'
         + '<soapenv:Header/>'
@@ -64,15 +94,15 @@ public inherited sharing class OrbisCotizarWebService {
         +       '<tem:doc_in>'
         +          '<auto>'
         +              '<asegurado>'
-        +                  '<persona>F</persona>'
+        +                  '<persona>'+ tipoCliente + '</persona>'
         +                  '<iva>CF</iva>'
-        +                  '<pagoMedioElectronico>S</pagoMedioElectronico>'
+        //+                  '<pagoMedioElectronico>S</pagoMedioElectronico>'
         +              '</asegurado>'
         +              '<bien>'
-        +                  '<anofab>2021</anofab>'
-        +                  '<cerokm>N</cerokm>'
-        +                  '<codpostal>7600</codpostal>'
-        +                  '<grupouso>PAR</grupouso>'
+        +                  '<anofab>' + auto.anio + '</anofab>'
+        +                  '<cerokm>' + is0km + '</cerokm>'
+        +                  '<codpostal>' + cliente.Codigo_Postal +'</codpostal>'
+        +                  '<grupouso>'+ grupoUso +'</grupouso>'
         +                  '<marca>45</marca>'
         +                  '<modelo>366</modelo>'
         +                  '<rastreo>N</rastreo>'
@@ -80,12 +110,12 @@ public inherited sharing class OrbisCotizarWebService {
         +                  '<uso>3058</uso>'
         +              '</bien>'
         +              '<usuario>'
-        +                  '<fecha>18022021</fecha>'
+        +                  '<fecha>23022021</fecha>'
         +                  '<pass>6101300001_ORBIS_6894</pass>'
         +                  '<plan>01</plan>'
         +                  '<usa>6113001</usa>'
         +                  '<vendedor>6101300001</vendedor>'
-        +                  '<vigencia>Q</vigencia>'
+        +                  '<vigencia>'+ vigencia + '</vigencia>'
         +              '</usuario>'
         +          '</auto>'
         +       '</tem:doc_in>'

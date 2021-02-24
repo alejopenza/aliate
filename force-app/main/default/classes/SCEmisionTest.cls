@@ -1,47 +1,74 @@
 @isTest
 public with sharing class SCEmisionTest {
-	//comentado por errores de compilacion al deployar a UAT
-    /*
-    @isTest
-    static void SCEmisionTestFail() {
-        
-        Test.setMock(HttpCalloutMock.class, new SCEmisionFailMock());
-        
-        test.StartTest();
-        SCEmision service = new SCEmision();
-        SCEmision.Wrapper wrapper = new SCEmision.Wrapper();
-        wrapper = service.getDataFromAPI();
-        test.stopTest();
-  
-        System.assertEquals(true, wrapper.hasError, 'Conexión devuelta sin errores.');        
+
+    @TestSetup
+    static void makeData(){
+        Opportunity opp = new Opportunity();
+        opp.Name = 'test';
+        opp.StageName = 'test';
+        opp.closeDate = system.today().addDays(1);
+        opp.policyPeriodId__c = 'test';
+        insert opp;
     }
 
     @isTest
-    static void SCEmisionTestFail500() {
+    static void doQuoteJobMethod_shouldProcessCorrectly(){
         
-        Test.setMock(HttpCalloutMock.class, new SCEmisionFailMock500());
-        
-        test.StartTest();
-        SCEmision service = new SCEmision();
-        SCEmision.Wrapper wrapper = new SCEmision.Wrapper();
-        wrapper = service.getDataFromAPI();
-        test.stopTest();
-  
-        System.assertEquals(true, wrapper.hasError, 'Conexión devuelta sin errores.');        
+        Opportunity opp = [
+            SELECT ID, policyPeriodId__c
+            FROM Opportunity
+            LIMIT 1
+        ];
+
+        EmitirPolizaController.Wrapper result = new EmitirPolizaController.Wrapper();
+        Test.startTest();
+        SCEmision.doQuoteJob(result, opp);
+        Test.stopTest();
+
+        system.assertEquals(result.hasError, false, 'No deberia haber error');
     }
 
     @isTest
-    static void SCEmisionTestSuccess() {
+    static void doQuoteJobMethod_shouldReturnAnErrorIfFails(){
         
-        Test.setMock(HttpCalloutMock.class, new SCEmisionSuccessMock());
-        
-        test.StartTest();
-        SCEmision service = new SCEmision();
-        SCEmision.Wrapper wrapper = new SCEmision.Wrapper();
-        wrapper = service.getDataFromAPI();
-        test.stopTest();
-  
-        System.assertEquals(false, wrapper.hasError, 'Conexión devuelta con errores.');        
+        Opportunity opp = [
+            SELECT ID, policyPeriodId__c
+            FROM Opportunity
+            LIMIT 1
+        ];
+
+        EmitirPolizaController.Wrapper result = new EmitirPolizaController.Wrapper();
+        Test.startTest();
+        SCEmision.doQuoteJob(result, opp);
+        Test.stopTest();
+
+        system.assertEquals(result.hasError, true, 'Deberia haber error');
+        system.assertNotEquals(result.errors.isEmpty(), true, 'Deberia haber mensajes de error');
     }
-	*/
+
+    @isTest
+    static void doPostMethod_shouldProcessCorrectly(){
+
+        EmitirPolizaController.Wrapper result = new EmitirPolizaController.Wrapper();
+        result.JobNumber = 'test';
+        Test.startTest();
+        SCEmision.doPost(result);
+        Test.stopTest();
+
+        system.assertEquals(result.hasError, false, 'No deberia haber error');
+    }
+
+    @isTest
+    static void doPostMethod_shouldReturnAnErrorIfFails(){
+        
+        EmitirPolizaController.Wrapper result = new EmitirPolizaController.Wrapper();
+        result.JobNumber = 'test';
+        Test.startTest();
+        SCEmision.doPost(result);
+        Test.stopTest();
+
+        system.assertEquals(result.hasError, true, 'Deberia haber error');
+        system.assertNotEquals(result.errors.isEmpty(), true, 'Deberia haber mensajes de error');
+    }
+	
 }

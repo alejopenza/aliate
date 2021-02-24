@@ -195,7 +195,7 @@
                                                                     required="true"/>
                                         </div>
                                         <br/>
-                                        <div class="slds-size_2-of-2">
+                                        <div class="slds-size_1-of-2">
                                             <lightning:checkboxGroup name="Tipo de Cobertura(s)"
                                                                     label="Tipo de Cobertura(s) San Cristóbal"
                                                                     options="{! v.optionsCoberturasSC }"
