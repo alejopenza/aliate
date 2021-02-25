@@ -12,6 +12,82 @@ public with sharing class SCEmisionTest {
     }
 
     @isTest
+    static void doSaveAsDraftMethod_shouldProcessCorrectly(){
+        
+        Opportunity opp = [
+            SELECT ID, policyPeriodId__c
+            FROM Opportunity
+            LIMIT 1
+        ];
+
+        EmitirPolizaController.Wrapper result = new EmitirPolizaController.Wrapper();
+        Test.startTest();
+        SCEmision.doSaveAsDraft(opp);
+        Test.stopTest();
+
+        system.assertEquals(result.hasError, false, 'No deberia haber error');
+    }
+
+    @isTest
+    static void doSaveAsDraftMethod_shouldReturnAnErrorIfFails(){
+        
+        Opportunity opp = [
+            SELECT ID, policyPeriodId__c
+            FROM Opportunity
+            LIMIT 1
+        ];
+
+        EmitirPolizaController.Wrapper result = new EmitirPolizaController.Wrapper();
+        Test.startTest();
+        SCEmision.doSaveAsDraft(opp);
+        Test.stopTest();
+
+        system.assertEquals(result.hasError, true, 'Deberia haber error');
+        system.assertNotEquals(result.errors.isEmpty(), true, 'Deberia haber mensajes de error');
+    }
+
+    @isTest
+    static void doUpdateCartMethod_shouldProcessCorrectly(){
+        
+        Opportunity opp = [
+            SELECT ID, policyPeriodId__c
+            FROM Opportunity
+            LIMIT 1
+        ];
+
+        EmitirPolizaController.Param params = new EmitirPolizaController.Param();
+        //todo datos
+
+        EmitirPolizaController.Wrapper result = new EmitirPolizaController.Wrapper();
+        Test.startTest();
+        SCEmision.doUpdateCar(opp, params);
+        Test.stopTest();
+
+        system.assertEquals(result.hasError, false, 'No deberia haber error');
+    }
+
+    @isTest
+    static void doUpdateCartMethod_shouldReturnAnErrorIfFails(){
+        
+        Opportunity opp = [
+            SELECT ID, policyPeriodId__c
+            FROM Opportunity
+            LIMIT 1
+        ];
+
+        EmitirPolizaController.Param params = new EmitirPolizaController.Param();
+        //todo datos
+
+        EmitirPolizaController.Wrapper result = new EmitirPolizaController.Wrapper();
+        Test.startTest();
+        SCEmision.doUpdateCar(opp, params);
+        Test.stopTest();
+
+        system.assertEquals(result.hasError, true, 'Deberia haber error');
+        system.assertNotEquals(result.errors.isEmpty(), true, 'Deberia haber mensajes de error');
+    }
+
+    @isTest
     static void doQuoteJobMethod_shouldProcessCorrectly(){
         
         Opportunity opp = [
@@ -22,7 +98,7 @@ public with sharing class SCEmisionTest {
 
         EmitirPolizaController.Wrapper result = new EmitirPolizaController.Wrapper();
         Test.startTest();
-        SCEmision.doQuoteJob(result, opp);
+        result = SCEmision.doQuoteJob( opp);
         Test.stopTest();
 
         system.assertEquals(result.hasError, false, 'No deberia haber error');
@@ -39,7 +115,7 @@ public with sharing class SCEmisionTest {
 
         EmitirPolizaController.Wrapper result = new EmitirPolizaController.Wrapper();
         Test.startTest();
-        SCEmision.doQuoteJob(result, opp);
+        result = SCEmision.doQuoteJob(opp);
         Test.stopTest();
 
         system.assertEquals(result.hasError, true, 'Deberia haber error');
@@ -49,10 +125,16 @@ public with sharing class SCEmisionTest {
     @isTest
     static void doPostMethod_shouldProcessCorrectly(){
 
+        Opportunity opp = [
+            SELECT ID, policyPeriodId__c
+            FROM Opportunity
+            LIMIT 1
+        ];
+
         EmitirPolizaController.Wrapper result = new EmitirPolizaController.Wrapper();
         result.JobNumber = 'test';
         Test.startTest();
-        SCEmision.doPost(result);
+        result = SCEmision.doPost(result, opp);
         Test.stopTest();
 
         system.assertEquals(result.hasError, false, 'No deberia haber error');
@@ -60,11 +142,17 @@ public with sharing class SCEmisionTest {
 
     @isTest
     static void doPostMethod_shouldReturnAnErrorIfFails(){
+
+        Opportunity opp = [
+            SELECT ID, policyPeriodId__c
+            FROM Opportunity
+            LIMIT 1
+        ];
         
         EmitirPolizaController.Wrapper result = new EmitirPolizaController.Wrapper();
         result.JobNumber = 'test';
         Test.startTest();
-        SCEmision.doPost(result);
+        result = SCEmision.doPost(result, opp);
         Test.stopTest();
 
         system.assertEquals(result.hasError, true, 'Deberia haber error');

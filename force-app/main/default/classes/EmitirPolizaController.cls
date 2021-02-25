@@ -39,20 +39,23 @@ public without sharing class EmitirPolizaController {
 
     /** Emite una poliza  */
     @AuraEnabled
-    public static Wrapper emitirPoliza(Id recordId){
-        system.debug('emitirPoliza: ' + recordId);
+    public static Wrapper emitirPoliza2(String param){
+        system.debug('emitirPoliza: ' + param);
+
+        Param params = (Param) JSON.deserialize(param, Param.Class);
+        system.debug('params: ' + params);
         
         Wrapper result = new Wrapper();
 
         try{
             Opportunity opp = [
-                SELECT ID, policyPeriodId__c
+                SELECT ID, policyPeriodId__c, BranchNumber__c
                 FROM Opportunity
-                WHERE Id = :recordId
+                WHERE Id = :params.recordId
             ];
 
             //Emitir San Cristobal
-            result = SCEmision.emitir(opp);
+            result = SCEmision.emitir(opp, params);
 
         }catch(Exception e){
             system.debug(e.getMessage() + ' ' + e.getStackTraceString());
@@ -278,6 +281,43 @@ public without sharing class EmitirPolizaController {
         @AuraEnabled
         public String JobNumber {get;set;}
 
+    }
+
+    public class Param{
+        public Param(){}
+
+        @AuraEnabled
+        public String recordId {get;set;}
+
+        @AuraEnabled
+        public String medioDePago {get;set;}
+
+        @AuraEnabled
+        public String origenDePago {get;set;}
+
+        @AuraEnabled
+        public String numeroTarjetaCredito {get;set;}
+
+        @AuraEnabled
+        public String nombreTarjetaCredito {get;set;}
+
+        @AuraEnabled
+        public String CBU {get;set;}
+
+        @AuraEnabled
+        public String nroMotor {get;set;}
+
+        @AuraEnabled
+        public String nroChasis {get;set;}
+
+        @AuraEnabled
+        public String mesVencimientoTarjetaCredito {get;set;}
+
+        @AuraEnabled
+        public String anioVencimientoTarjetaCredito {get;set;}
+
+        @AuraEnabled
+        public String patente {get;set;}
     }
     
 }

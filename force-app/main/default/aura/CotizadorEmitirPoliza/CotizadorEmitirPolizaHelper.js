@@ -68,7 +68,95 @@
     },
     handleEmitirPoliza : function(component, event, helper) {
         console.log('handleEmitirPoliza(): ');
+
+        var recordId = component.get('v.recordId');
+        console.log('recordId: ' , recordId);
+        var medioDePago = component.get('v.medioDePago');
+        console.log('medioDePago: ' , medioDePago);
+        var origenDePago = component.get('v.origenDePago');
+        console.log('origenDePago: ' , origenDePago);
+        var numeroTarjetaCredito = component.get('v.numeroTarjetaDeCredito');
+        console.log('numeroTarjetaCredito: ' , numeroTarjetaCredito);
+        var nombreTarjetaCredito = component.get('v.nombreTarjetaDeCredito');
+        console.log('nombreTarjetaCredito: ' , nombreTarjetaCredito);
+        var CBU = component.get('v.CBU');
+        console.log('CBU: ' , CBU);
+        var nroMotor = component.find('nroMotor').get('v.value');
+        console.log('nroMotor: ' , nroMotor);
+        var nroChasis = component.find('nroChasis').get('v.value');
+        console.log('nroChasis: ' , nroChasis);
+        var mesVencimientoTarjetaCredito = component.get('v.mesVencimientoTarjeta');
+        console.log('mesVencimientoTarjetaCredito: ' , mesVencimientoTarjetaCredito);
+        var anioVencimientoTarjetaCredito = component.get('v.anioVencimientoTarjeta');
+        console.log('anioVencimientoTarjetaCredito: ' , anioVencimientoTarjetaCredito);
+        var patente = component.find('patente').get('v.value');
+        console.log('patente: ' , patente);
+
+        var param = {
+            'recordId' : recordId,
+            'medioDePago' : medioDePago,
+            'origenDePago' : origenDePago,
+            'numeroTarjetaCredito' : numeroTarjetaCredito,
+            'nombreTarjetaCredito' : nombreTarjetaCredito,
+            'CBU' : CBU,
+            'nroMotor' : nroMotor,
+            'nroChasis' : nroChasis,
+            'mesVencimientoTarjetaCredito' : mesVencimientoTarjetaCredito,
+            'anioVencimientoTarjetaCredito' : anioVencimientoTarjetaCredito,
+            'patente' : patente
+        }
+
+        var action = component.get("c.emitirPoliza2");
+        action.setParams({
+            'param' : JSON.stringify(param)
+        });
+        component.set('v.isLoading', true);
+        action.setCallback(this, function(response) {
+            component.set('v.isLoading', false);
+            
+            var state = response.getState();
+            console.log('state: ' , state);
+            
+            let result = response.getReturnValue();
+            
+            if (state === "SUCCESS") {
+                console.log('stringify: ' , JSON.stringify(result));
+                
+                var toastEvent = $A.get("e.force:showToast");
+                if(result.hasError){
+                    toastEvent.setParams({
+                        "title": "Error!",
+                        "message": result.errors[0],
+                        "type": "error"
+                    });
+                    toastEvent.fire();
+                }else{
+                    toastEvent.setParams({
+                        "title": "Success!",
+                        "message": 'Poliza Emitida!',
+                        "type": "success"
+                    });
+                    toastEvent.fire();
+                    
+                    var navEvt = $A.get("e.force:navigateToSObject");
+                    navEvt.setParams({
+                        "recordId": result.returnId
+                    });
+                    navEvt.fire();
+                    
+                }
+            }else if(state === 'ERROR'){
+                toastEvent.setParams({
+                    "title": "Error!",
+                    "message": result.errors[0],
+                    "type": "error"
+                });
+                toastEvent.fire();
+            }
+        });
+        $A.enqueueAction(action);
         
+        /*
         var nroMotor = 0;
         var nroChasis = 0;
         var patente = '';
@@ -123,8 +211,8 @@
                     });
                     toastEvent.fire();
                     
-                    /*$A.get('e.force:refreshView').fire();
-                    $A.get("e.force:closeQuickAction").fire();*/
+                    //$A.get('e.force:refreshView').fire();
+                    //$A.get("e.force:closeQuickAction").fire();
                     
                     var navEvt = $A.get("e.force:navigateToSObject");
                     navEvt.setParams({
@@ -143,6 +231,7 @@
             }
         });
         $A.enqueueAction(action);
+        */
     },
     handleSiguiente: function(component, event, helper){
         component.set('v.showEmitirButton', true);

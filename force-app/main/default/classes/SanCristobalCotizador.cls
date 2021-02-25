@@ -72,9 +72,12 @@ public with sharing class SanCristobalCotizador {
     }
 
     public static CotizadorController.Wrapper doSaveInSFDC(CotizadorController.Wrapper result, List<CotizadorController.CotizacionSancor> cotizaciones, CotizadorController.Auto auto, Opportunity opp){
+        system.debug('doSaveInSFDC(): ' + cotizaciones);
         try{
 
             opp.policyPeriodId__c = cotizaciones[0].policyPeriodId;
+            opp.BranchNumber__c = cotizaciones[0].BranchNumber;
+            update opp;
 
             Id recordTypeAutomotorId = [
                 SELECT ID
